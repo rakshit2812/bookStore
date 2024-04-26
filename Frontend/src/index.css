@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Poppins:wght@500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* *{
+    background-color: white;
+} */
+
+body{
+    font-family: "poppins", sans-serif;
+}
+
+.login-button{
+    background-color: rgb(255,82,217);
+}
+
+.login-button:hover{
+    color: white;
+    background-color: rgb(231, 23, 186);
+    transform: scale(1.051);
+}
+
+.custom-contact::-webkit-scrollbar{
+    width: 0px;
+}
+.custom-footer{
+    row-gap: 1.5rem;
+}
+.confirm{
+    color: 	#5cb85c;
+}
