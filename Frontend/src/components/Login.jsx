@@ -1,14 +1,44 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import toast from 'react-hot-toast';
 
 export default function Login() {
+  const theme = localStorage.getItem("theme");
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (data) => {
+    const userInfo = {
+      email: data.email,
+      password: data.password,
+    };
+    await axios.post("http://localhost:4001/user/login", userInfo, {
+      headers:{
+        "Content-Type" : "application/json"
+      }, withCredentials : true
+    }).then((res) => {
+      console.log(res.data);
+      localStorage.setItem("token", res.data.token);
+      if (res.data.user.email) {
+        toast.success('login successfull!');
+        document.getElementById("my_modal_3").close()
+
+        setTimeout(() => {
+        window.location.reload();
+        }, 1000);
+      }
+    }).catch((error)=>{
+      if(error.response){
+        console.log(error.response.data.message);
+        toast.error(error.response.data.message);
+      // alert();
+      }
+    })
+  }
   return (
     <div>
       <dialog id="my_modal_3" className="modal">
