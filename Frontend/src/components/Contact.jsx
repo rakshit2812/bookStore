@@ -21,11 +21,10 @@ export default function Contact() {
       .then(
         () => {
           form.current.reset();
-          console.log("hpgya");
           handleConfirm();
         },
         (error) => {
-          console.log("FAILED...", error.text);
+          console.log("Contact information sending FAILED...", error.text);
         }
       );
   };

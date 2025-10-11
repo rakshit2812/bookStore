@@ -15,7 +15,7 @@ app.use(cookieParser());
 const PORT = process.env.PORT || 4000;
 const URL = process.env.MONGO_URL
 
-mongoose.connect(URL).then(()=> console.log("MongoDB conncted succesfully.")).catch((error)=> console.log("gadbad hogyi",error))
+mongoose.connect(URL).then(()=> console.log("MongoDB conncted succesfully.")).catch((error)=> console.log("Caught into an error",error))
 
 app.use(cors({
     credentials : true,

@@ -37,7 +37,6 @@ export const handleLogin = async(req,res) => {
             return res.status(400).json({message : "Invalid credentials"});
         }
             const token = setUser(user);
-            console.log("yaha aaya hu, token laya hu");
             res.cookie("id" , token,{
                 path : "/",
                 domain : "localhost",

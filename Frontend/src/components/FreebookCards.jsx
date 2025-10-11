@@ -6,8 +6,6 @@ import Slider from "react-slick";
 import Cards from "./Cards";
 import axios from "axios"
 
-
-
 export default function FreebookCards() {
 
   const [book,setBook] = useState([]);
@@ -20,7 +18,7 @@ export default function FreebookCards() {
         // console.log(data);
         setBook(data);
       } catch (error) {
-        console.log("gadbad axiso" , error);
+        console.log("Error occured in getting book" , error);
       }
     }
     getBook();

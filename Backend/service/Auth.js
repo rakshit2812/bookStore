@@ -14,12 +14,12 @@ export const setUser = (user) => {
 
 export const getUser = (token) => {
     if(!token){
-        console.log("token ille");
+        console.log("token not found");
         return null;
     }
     try {
         return jwt.verify(token , SignatureKey,)
     } catch (error) {
-        console.log("aiioo gadbad hoti", error);
+        console.log("Error encountered in getting user", error);
     }
 }
