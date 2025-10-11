@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 export default function Login() {
   const theme = localStorage.getItem("theme");
@@ -16,29 +16,33 @@ export default function Login() {
       email: data.email,
       password: data.password,
     };
-    await axios.post("http://localhost:4001/user/login", userInfo, {
-      headers:{
-        "Content-Type" : "application/json"
-      }, withCredentials : true
-    }).then((res) => {
-      console.log(res.data);
-      localStorage.setItem("token", res.data.token);
-      if (res.data.user.email) {
-        toast.success('login successfull!');
-        document.getElementById("my_modal_3").close()
+    await axios
+      .post("https://bookstore-0rwd.onrender.com/user/login", userInfo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log(res.data);
+        localStorage.setItem("token", res.data.token);
+        if (res.data.user.email) {
+          toast.success("login successfull!");
+          document.getElementById("my_modal_3").close();
 
-        setTimeout(() => {
-        window.location.reload();
-        }, 1000);
-      }
-    }).catch((error)=>{
-      if(error.response){
-        console.log(error.response.data.message);
-        toast.error(error.response.data.message);
-      // alert();
-      }
-    })
-  }
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.log(error.response.data.message);
+          toast.error(error.response.data.message);
+          // alert();
+        }
+      });
+  };
   return (
     <div>
       <dialog id="my_modal_3" className="modal">
@@ -92,7 +96,8 @@ export default function Login() {
               </button>
               <p>
                 Not Registered?{" "}
-                <Link to = "/signup"
+                <Link
+                  to="/signup"
                   className=" cursor-pointer text-blue-500 underline"
                 >
                   Signup now
