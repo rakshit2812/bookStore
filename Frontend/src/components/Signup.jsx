@@ -20,7 +20,7 @@ export default function Signup() {
       password: data.password,
     };
     await axios
-      .post("https://bookstore-0rwd.onrender.com/user/signup", userInfo)
+      .post("https://bookstore-gvbx.onrender.com/user/signup", userInfo)
       .then((res) => {
         console.log(res.data);
         // console.log(res.data.token);

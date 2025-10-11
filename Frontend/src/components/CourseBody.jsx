@@ -8,7 +8,7 @@ export default function CourseBody() {
   useEffect(() => {
     const getBook = async () => {
       try {
-        const res = await axios.get("https://bookstore-0rwd.onrender.com/book");
+        const res = await axios.get("https://bookstore-gvbx.onrender.com/book");
         // console.log(res.data);
         setBook(res.data);
       } catch (error) {
