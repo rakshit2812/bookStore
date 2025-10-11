@@ -8,16 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rakshit2812/bookStore.git"
-  },
   "author": "Rakshit Gupta",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rakshit2812/bookStore/issues"
-  },
-  "homepage": "https://github.com/rakshit2812/bookStore#readme",
+  "homepage": "https://app-bookstore.vercel.app",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
