@@ -4,8 +4,9 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export default function Signup() {
+export default function LoginPage() {
   const navigate = useNavigate();
+  const theme = localStorage.getItem("theme");
   const {
     register,
     handleSubmit,
@@ -14,19 +15,26 @@ export default function Signup() {
 
   const onSubmit = async (data) => {
     const userInfo = {
-      fullname: data.fullname,
       email: data.email,
       password: data.password,
     };
     await axios
-      .post("https://bookstore-gvbx.onrender.com/user/signup", userInfo)
+      .post("https://bookstore-gvbx.onrender.com/user/login", userInfo, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      })
       .then((res) => {
         console.log(res.data);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
-        if (localStorage.getItem("token")) {
-          toast.success("Signup successful!");
-          navigate("/");
+        if (res.data.user.email) {
+          toast.success("Login successful!");
+          setTimeout(() => {
+            navigate("/");
+            window.location.reload();
+          }, 1000);
         }
       })
       .catch((error) => {
@@ -37,23 +45,21 @@ export default function Signup() {
       });
   };
 
-  const theme = localStorage.getItem("theme");
-
   return (
     <div
       className={`min-h-screen flex items-center justify-center p-4 ${
-        theme === "dark" ? "bg-slate-950" : "bg-gradient-to-br from-purple-50 to-pink-50"
+        theme === "dark" ? "bg-slate-950" : "bg-gradient-to-br from-pink-50 to-purple-50"
       }`}
     >
       <div
-        className={`flex flex-col lg:flex-row-reverse w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden ${
+        className={`flex flex-col lg:flex-row w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden ${
           theme === "dark" ? "bg-slate-900" : "bg-white"
         }`}
       >
-        {/* Right Side - Image Section */}
-        <div className="lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-purple-600 to-pink-500 p-12 flex flex-col justify-center items-center">
+        {/* Left Side - Image Section */}
+        <div className="lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600 p-12 flex flex-col justify-center items-center">
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[url('/bannerfinal.png')] bg-cover bg-center"></div>
+            <div className="absolute inset-0 bg-[url('/book1.png')] bg-cover bg-center"></div>
           </div>
           <div className="relative z-10 text-center">
             <div className="mb-6">
@@ -62,14 +68,14 @@ export default function Signup() {
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
               </svg>
             </div>
             <h1 className="text-4xl font-bold text-white mb-4">
-              Join Our Community
+              Welcome Back
             </h1>
-            <p className="text-purple-100 text-lg mb-8">
-              Start your reading journey with thousands of book lovers
+            <p className="text-pink-100 text-lg mb-8">
+              Discover your next great read in our curated collection
             </p>
             <div className="flex flex-col space-y-4 text-white">
               <div className="flex items-center space-x-3">
@@ -80,7 +86,7 @@ export default function Signup() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Access to premium book collection</span>
+                <span>Thousands of books at your fingertips</span>
               </div>
               <div className="flex items-center space-x-3">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -90,7 +96,7 @@ export default function Signup() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Create your personal library</span>
+                <span>Personalized recommendations</span>
               </div>
               <div className="flex items-center space-x-3">
                 <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -100,13 +106,13 @@ export default function Signup() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <span>Connect with fellow readers</span>
+                <span>Exclusive member benefits</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Left Side - Form Section */}
+        {/* Right Side - Form Section */}
         <div className="lg:w-1/2 p-12 flex flex-col justify-center">
           <div className="w-full max-w-md mx-auto">
             <Link
@@ -136,42 +142,17 @@ export default function Signup() {
                 theme === "dark" ? "text-white" : "text-gray-800"
               }`}
             >
-              Create Account
+              Login
             </h2>
             <p
               className={`mb-8 ${
                 theme === "dark" ? "text-gray-400" : "text-gray-600"
               }`}
             >
-              Sign up to start exploring our collection
+              Enter your credentials to access your account
             </p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div>
-                <label
-                  className={`block text-sm font-medium mb-2 ${
-                    theme === "dark" ? "text-gray-300" : "text-gray-700"
-                  }`}
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="John Doe"
-                  className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${
-                    theme === "dark"
-                      ? "bg-slate-800 border-slate-700 text-white placeholder-gray-500"
-                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
-                  } ${errors.fullname ? "border-red-500" : ""}`}
-                  {...register("fullname", { required: true })}
-                />
-                {errors.fullname && (
-                  <p className="mt-1 text-sm text-red-500">
-                    Full name is required
-                  </p>
-                )}
-              </div>
-
               <div>
                 <label
                   className={`block text-sm font-medium mb-2 ${
@@ -183,7 +164,7 @@ export default function Signup() {
                 <input
                   type="email"
                   placeholder="you@example.com"
-                  className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all ${
                     theme === "dark"
                       ? "bg-slate-800 border-slate-700 text-white placeholder-gray-500"
                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -207,8 +188,8 @@ export default function Signup() {
                 </label>
                 <input
                   type="password"
-                  placeholder="Create a strong password"
-                  className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${
+                  placeholder="Enter your password"
+                  className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all ${
                     theme === "dark"
                       ? "bg-slate-800 border-slate-700 text-white placeholder-gray-500"
                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
@@ -224,9 +205,9 @@ export default function Signup() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-600 transform hover:scale-[1.02] transition-all shadow-lg hover:shadow-xl"
+                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transform hover:scale-[1.02] transition-all shadow-lg hover:shadow-xl"
               >
-                Create Account
+                Sign In
               </button>
             </form>
 
@@ -236,12 +217,12 @@ export default function Signup() {
                   theme === "dark" ? "text-gray-400" : "text-gray-600"
                 }`}
               >
-                Already have an account?{" "}
+                Don't have an account?{" "}
                 <Link
-                  to="/login"
-                  className="font-semibold text-purple-600 hover:text-purple-700 transition-colors"
+                  to="/signup"
+                  className="font-semibold text-pink-500 hover:text-pink-600 transition-colors"
                 >
-                  Login here
+                  Sign up now
                 </Link>
               </p>
             </div>

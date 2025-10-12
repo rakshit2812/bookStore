@@ -26,6 +26,7 @@ export default function Login() {
       .then((res) => {
         console.log(res.data);
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
         if (res.data.user.email) {
           toast.success("login successfull!");
           document.getElementById("my_modal_3").close();
