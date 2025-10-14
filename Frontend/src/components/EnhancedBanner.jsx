@@ -202,43 +202,38 @@ export default function EnhancedBanner() {
           {/* Right - Book Illustration Section */}
           <div className="w-full lg:w-1/2 relative">
             <div 
-              className="relative z-10 p-8 rounded-3xl shadow-[0_8px_32px_rgba(107,70,193,0.08)]"
-              style={{
-                background: theme === "light" 
-                  ? "linear-gradient(135deg, #F0FDFA 0%, #E9D8FD 50%, #FFFBEB 100%)"
-                  : "linear-gradient(135deg, #1e293b 0%, #374151 50%, #1f2937 100%)",
-                borderRadius: "24px"
-              }}
+              className="relative z-10 p-8 rounded-3xl"
+              
             >
               <img
-                src="/bannerfinal.png"
+                src="/banner.png"
                 alt="Books Collection"
                 className="w-full rounded-2xl transform hover:scale-105 transition-transform duration-300"
               />
               
               {/* Decorative Elements */}
               {/* Coffee Cup */}
-              <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#FFFBEB] border-2 border-[#78350F] opacity-80">
+              {/* <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#FFFBEB] border-2 border-[#78350F] opacity-80">
                 <div className="w-4 h-4 bg-[#78350F] rounded-full mt-1 ml-1"></div>
-              </div>
+              </div> */}
               
               {/* Book Spines */}
-              <div className="absolute bottom-4 left-4 flex space-x-1">
+              {/* <div className="absolute bottom-4 left-4 flex space-x-1">
                 <div className="w-2 h-16 bg-[#4F46E5] rounded-sm"></div>
                 <div className="w-2 h-14 bg-[#F97316] rounded-sm"></div>
                 <div className="w-2 h-18 bg-[#DC2626] rounded-sm"></div>
                 <div className="w-2 h-12 bg-[#1E40AF] rounded-sm"></div>
                 <div className="w-2 h-15 bg-[#10B981] rounded-sm"></div>
-              </div>
+              </div> */}
               
               {/* Eucalyptus Leaves */}
-              <div className="absolute top-8 left-4 w-6 h-12 bg-gradient-to-b from-[#A8D5BA] to-[#10B981] rounded-full opacity-70 transform rotate-12"></div>
-              <div className="absolute top-12 left-8 w-4 h-8 bg-gradient-to-b from-[#A8D5BA] to-[#10B981] rounded-full opacity-60 transform -rotate-12"></div>
+              {/* <div className="absolute top-8 left-4 w-6 h-12 bg-gradient-to-b from-[#A8D5BA] to-[#10B981] rounded-full opacity-70 transform rotate-12"></div>
+              <div className="absolute top-12 left-8 w-4 h-8 bg-gradient-to-b from-[#A8D5BA] to-[#10B981] rounded-full opacity-60 transform -rotate-12"></div> */}
             </div>
             
             {/* Background Decorative Blobs */}
-            <div className="absolute top-10 right-10 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-            <div className="absolute bottom-10 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
+            {/* <div className="absolute top-10 right-10 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+            <div className="absolute bottom-10 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div> */}
           </div>
         </div>
       </div>

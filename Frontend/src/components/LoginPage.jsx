@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../lib/base-url";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function LoginPage() {
       password: data.password,
     };
     await axios
-      .post("https://bookstore-gvbx.onrender.com/user/login", userInfo, {
+      .post(`${BASE_URL}/user/login`, userInfo, {
         headers: {
           "Content-Type": "application/json",
         },

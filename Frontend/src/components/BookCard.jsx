@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { Heart, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
+import { BASE_URL } from "../lib/base-url";
 
 export default function BookCard({ book }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -76,7 +77,7 @@ export default function BookCard({ book }) {
     setIsAddingToCart(true);
     try {
       await axios.post(
-        "https://bookstore-gvbx.onrender.com/cart/add",
+        `${BASE_URL}/cart/add`,
         { bookId: book._id, quantity: 1 },
         {
           headers: {
@@ -99,7 +100,7 @@ export default function BookCard({ book }) {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
-        "https://bookstore-gvbx.onrender.com/cart/update",
+        `${BASE_URL}/cart/update`,
         { bookId: book._id, quantity: quantity + 1 },
         {
           headers: {
@@ -119,7 +120,7 @@ export default function BookCard({ book }) {
     const token = localStorage.getItem("token");
     if (quantity === 1) {
       try {
-        await axios.delete(`https://bookstore-gvbx.onrender.com/cart/remove/${book._id}`, {
+        await axios.delete(`${BASE_URL}/cart/remove/${book._id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -134,7 +135,7 @@ export default function BookCard({ book }) {
     } else {
       try {
         await axios.put(
-          "https://bookstore-gvbx.onrender.com/cart/update",
+          `${BASE_URL}/cart/update`,
           { bookId: book._id, quantity: quantity - 1 },
           {
             headers: {
@@ -160,7 +161,7 @@ export default function BookCard({ book }) {
 
     try {
       await axios.post(
-        "https://bookstore-gvbx.onrender.com/favorite/toggle",
+        `${BASE_URL}/favorite/toggle`,
         { bookId: book._id },
         {
           headers: {

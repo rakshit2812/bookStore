@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BookCard from "../components/BookCard";
 import { useTheme } from "../contexts/ThemeContext";
+import { BookOpen, Star } from "lucide-react";
+import { BASE_URL } from "../lib/base-url";
 
 export default function BooksPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +34,7 @@ export default function BooksPage() {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const response = await axios.get("https://bookstore-gvbx.onrender.com/book/genres", {
+        const response = await axios.get(`${BASE_URL}/book/genres`, {
           withCredentials: true,
         });
         setGenres(["all", ...response.data]);
@@ -55,7 +57,7 @@ export default function BooksPage() {
         params.append("page", currentPage);
 
         const response = await axios.get(
-          `https://bookstore-gvbx.onrender.com/book/filter?${params.toString()}`,
+          `${BASE_URL}/book/filter?${params.toString()}`,
           { withCredentials: true }
         );
 
@@ -90,15 +92,186 @@ export default function BooksPage() {
     <div className={theme === "dark" ? "bg-slate-950 min-h-screen" : "bg-gray-50 min-h-screen"}>
       <Navbar />
       
-      {/* Hero Banner */}
-      <div className={`${theme === "dark" ? "bg-slate-900" : "bg-gradient-to-r from-purple-600 to-pink-600"} py-16`}>
-        <div className="max-w-screen-2xl container mx-auto px-4 md:px-20">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Explore Our Collection
-          </h1>
-          <p className="text-xl text-white opacity-90">
-            Browse thousands of books across all genres
-          </p>
+      {/* Hero Section */}
+      <div 
+        className={`relative overflow-hidden ${
+          theme === "dark" 
+            ? "bg-slate-900" 
+            : "bg-gradient-to-br from-[#F8FAFC] via-[#F0FDFA] to-[#E9D8FD]"
+        }`}
+        style={{
+          background: theme === "light" 
+            ? "linear-gradient(135deg, #F8FAFC 0%, #F0FDFA 50%, #E9D8FD 100%)"
+            : undefined
+        }}
+      >
+        <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-12 md:py-16">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+            {/* Left Content */}
+            <div className="w-full lg:w-1/2 space-y-8 mt-16 lg:mt-24">
+
+              {/* Main Heading */}
+              <h1 
+                className={`text-4xl md:text-6xl font-extrabold leading-tight ${
+                  theme === "dark" ? "text-white" : "text-[#0F172A]"
+                }`}
+                style={{
+                  textShadow: theme === "light" ? "0 2px 4px rgba(15, 23, 42, 0.04)" : "none"
+                }}
+              >
+                Your Gateway to{" "}
+                <span 
+                  className="bg-gradient-to-br from-[#E91E8C] to-[#B794F6] bg-clip-text text-transparent"
+                  style={{
+                    background: "linear-gradient(135deg, #E91E8C 0%, #B794F6 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent"
+                  }}
+                >
+                  Infinite Stories
+                </span>
+              </h1>
+              
+              {/* Description */}
+              <p 
+                className={`text-lg md:text-xl ${
+                  theme === "dark" ? "text-gray-300" : "text-[#475569]"
+                }`}
+                style={{ lineHeight: "1.8" }}
+              >
+                Dive into our curated collection of over 10,000 books spanning every genre imaginable. From timeless classics to latest releases, award-winning novels to hidden literary gems.
+              </p>
+
+              {/* Stats Row */}
+              <div className={`flex items-center justify-between p-6 rounded-2xl ${
+                theme === "dark" ? "bg-slate-800/50" : "bg-white"
+              } backdrop-blur-sm border ${
+                theme === "dark" ? "border-slate-700" : "border-[#E2E8F0]"
+              } shadow-lg`}>
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1">
+                    <span 
+                      className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
+                      style={{
+                        background: "linear-gradient(135deg, #E91E8C, #6B46C1)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        fontWeight: "800"
+                      }}
+                    >
+                      10K
+                    </span>
+                    <span className="text-[#14B8A6] text-2xl font-bold">+</span>
+                  </div>
+                  <div 
+                    className={`text-sm mt-1 ${
+                      theme === "dark" ? "text-gray-400" : "text-[#64748B]"
+                    }`}
+                    style={{ fontWeight: "500", letterSpacing: "0.5px" }}
+                  >
+                    Books
+                  </div>
+                </div>
+
+                <div 
+                  className={`w-px h-12 ${
+                    theme === "dark" ? "bg-slate-600" : "bg-[#E2E8F0]"
+                  }`}
+                ></div>
+
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1">
+                    <span 
+                      className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
+                      style={{
+                        background: "linear-gradient(135deg, #E91E8C, #6B46C1)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        fontWeight: "800"
+                      }}
+                    >
+                      50
+                    </span>
+                    <span className="text-[#14B8A6] text-2xl font-bold">+</span>
+                  </div>
+                  <div 
+                    className={`text-sm mt-1 ${
+                      theme === "dark" ? "text-gray-400" : "text-[#64748B]"
+                    }`}
+                    style={{ fontWeight: "500", letterSpacing: "0.5px" }}
+                  >
+                    Genres
+                  </div>
+                </div>
+
+                <div 
+                  className={`w-px h-12 ${
+                    theme === "dark" ? "bg-slate-600" : "bg-[#E2E8F0]"
+                  }`}
+                ></div>
+
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-1">
+                    <span 
+                      className="text-3xl md:text-4xl font-bold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
+                      style={{
+                        background: "linear-gradient(135deg, #E91E8C, #6B46C1)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        fontWeight: "800"
+                      }}
+                    >
+                      100
+                    </span>
+                    <span className="text-[#14B8A6] text-2xl font-bold">+</span>
+                  </div>
+                  <div 
+                    className={`text-sm mt-1 ${
+                      theme === "dark" ? "text-gray-400" : "text-[#64748B]"
+                    }`}
+                    style={{ fontWeight: "500", letterSpacing: "0.5px" }}
+                  >
+                    Authors
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right - Book Image */}
+            <div className="w-full lg:w-1/2 relative">
+              <div className="relative z-10">
+                <img
+                  src="/book-banner.png"
+                  alt="Book Collection"
+                  className="w-full max-w-lg mx-auto drop-shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              
+              {/* Floating Elements */}
+              <div className={`absolute top-10 left-10 p-4 rounded-2xl shadow-xl ${
+                theme === "dark" ? "bg-slate-800" : "bg-white"
+              } backdrop-blur-sm border ${
+                theme === "dark" ? "border-slate-700" : "border-[#E2E8F0]"
+              } animate-bounce`}>
+                <BookOpen className="w-8 h-8 text-[#E91E8C]" />
+              </div>
+
+              <div className={`absolute bottom-20 right-10 p-3 rounded-xl shadow-xl ${
+                theme === "dark" ? "bg-slate-800" : "bg-white"
+              } backdrop-blur-sm border ${
+                theme === "dark" ? "border-slate-700" : "border-[#E2E8F0]"
+              } animate-pulse`}>
+                <div className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-[#FBBF24] fill-current" />
+                  <span className={`text-sm font-bold ${
+                    theme === "dark" ? "text-white" : "text-[#0F172A]"
+                  }`}>
+                    4.8
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

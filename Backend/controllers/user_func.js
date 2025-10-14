@@ -16,8 +16,8 @@ export const handleSignup = async(req,res) => {
             email,
             password : hashPass,
         })
-        const token = setUser(newUser);
-        return res.status(201).json({message : "User created succesfully" , token : token ,user : {
+        // const token = setUser(newUser);
+        return res.status(201).json({message : "User created succesfully" ,user : {
             fullname : newUser.fullname,
             email : newUser.email,
             id : newUser._id,
@@ -41,11 +41,15 @@ export const handleLogin = async(req,res) => {
                 path : "/",
                 domain : "localhost",
             });
-            return res.status(200).json({message : "Login successfull", user : {
-                fullname : user.fullname,
-                email : user.email,
-                // id : user._id,
-            }})
+            return res.status(200).json({
+                message : "Login successfull", 
+                token : token,
+                user : {
+                    fullname : user.fullname,
+                    email : user.email,
+                    id : user._id,
+                }
+            })
     } catch (error) {
         console.log("login error" , error);
         return res.status(500).json({message : "Internal server error"});

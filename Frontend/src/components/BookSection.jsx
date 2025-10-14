@@ -5,6 +5,7 @@ import BookCard from "./BookCard";
 import Slider from "react-slick";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import { BASE_URL } from "../lib/base-url";
 
 // Custom Arrow Components
 const NextArrow = (props) => {
@@ -88,7 +89,7 @@ export default function BookSection({ title, endpoint, viewAllLink, genre, color
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`https://bookstore-gvbx.onrender.com/book/${endpoint}`, {
+        const response = await axios.get(`${BASE_URL}/book/${endpoint}`, {
           withCredentials: true,
         });
         setBooks(response.data);
@@ -106,7 +107,7 @@ export default function BookSection({ title, endpoint, viewAllLink, genre, color
     if (genre) {
       const fetchGenres = async () => {
         try {
-          const response = await axios.get("https://bookstore-gvbx.onrender.com/book/genres", {
+          const response = await axios.get(`${BASE_URL}/book/genres`, {
             withCredentials: true,
           });
           setGenres(["all", ...response.data]);

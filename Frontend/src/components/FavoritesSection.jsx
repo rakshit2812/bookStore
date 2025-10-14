@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import BookCard from "./BookCard";
 import { useTheme } from "../contexts/ThemeContext";
+import { BASE_URL } from "../lib/base-url";
 
 export default function FavoritesSection() {
   const [favorites, setFavorites] = useState([]);
@@ -16,7 +17,7 @@ export default function FavoritesSection() {
   const fetchFavorites = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("https://bookstore-gvbx.onrender.com/favorite", {
+      const response = await axios.get(`${BASE_URL}/favorite`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });

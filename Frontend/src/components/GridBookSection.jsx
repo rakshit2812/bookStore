@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import BookCard from "./BookCard";
 import { useTheme } from "../contexts/ThemeContext";
+import { BASE_URL } from "../lib/base-url";
 
 export default function GridBookSection({ title, endpoint, viewAllLink, colorScheme = "teal" }) {
   const [books, setBooks] = useState([]);
@@ -12,7 +13,7 @@ export default function GridBookSection({ title, endpoint, viewAllLink, colorSch
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`https://bookstore-gvbx.onrender.com/book/${endpoint}`, {
+        const response = await axios.get(`${BASE_URL}/book/${endpoint}`, {
           withCredentials: true,
         });
         // Limit to 6 books

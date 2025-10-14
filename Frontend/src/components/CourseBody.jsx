@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import Cards from "../components/Cards";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../lib/base-url";
 
 export default function CourseBody() {
   const [book, setBook] = useState([]);
   useEffect(() => {
     const getBook = async () => {
       try {
-        const res = await axios.get("https://bookstore-gvbx.onrender.com/book", {withCredentials : true});
+        const res = await axios.get(`${BASE_URL}/book`, {withCredentials : true});
         
         // console.log(res.data);
         setBook(res.data);

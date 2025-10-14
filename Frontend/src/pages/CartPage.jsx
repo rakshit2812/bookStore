@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
+import { BASE_URL } from "../lib/base-url";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -26,7 +27,7 @@ export default function CartPage() {
     }
 
     try {
-      const response = await axios.get("https://bookstore-gvbx.onrender.com/cart", {
+      const response = await axios.get(`${BASE_URL}/cart`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
@@ -43,7 +44,7 @@ export default function CartPage() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
-        "https://bookstore-gvbx.onrender.com/cart/update",
+        `${BASE_URL}/cart/update`,
         { bookId, quantity: newQuantity },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -63,7 +64,7 @@ export default function CartPage() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.delete(
-        `https://bookstore-gvbx.onrender.com/cart/remove/${bookId}`,
+        `${BASE_URL}/cart/remove/${bookId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
@@ -83,7 +84,7 @@ export default function CartPage() {
     if (!window.confirm("Are you sure you want to clear your cart?")) return;
 
     try {
-      const response = await axios.delete("https://bookstore-gvbx.onrender.com/cart/clear", {
+      const response = await axios.delete(`${BASE_URL}/cart/clear`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });

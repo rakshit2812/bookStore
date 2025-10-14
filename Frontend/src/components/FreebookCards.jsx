@@ -5,13 +5,14 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import Cards from "./Cards";
 import axios from "axios";
+import { BASE_URL } from "../lib/base-url";
 
 export default function FreebookCards() {
   const [book, setBook] = useState([]);
   useEffect(() => {
     const getBook = async () => {
       try {
-        const res = await axios.get("https://bookstore-gvbx.onrender.com/book", {withCredentials : true});
+        const res = await axios.get(`${BASE_URL}/book`, {withCredentials : true});
         // console.log(res.data);
         const data = res.data.filter((data) => data.category === "Free");
         // console.log(data);

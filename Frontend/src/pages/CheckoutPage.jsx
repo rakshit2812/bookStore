@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
+import { BASE_URL } from "../lib/base-url";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function CheckoutPage() {
     }
 
     try {
-      const response = await axios.get("https://bookstore-gvbx.onrender.com/cart", {
+      const response = await axios.get(`${BASE_URL}/cart`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
@@ -97,7 +98,7 @@ export default function CheckoutPage() {
 
     try {
       const response = await axios.post(
-        "https://bookstore-gvbx.onrender.com/order/create",
+        `${BASE_URL}/order/create`,
         {
           shippingAddress,
           paymentMethod,

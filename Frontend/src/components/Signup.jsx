@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../lib/base-url";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -19,14 +20,16 @@ export default function Signup() {
       password: data.password,
     };
     await axios
-      .post("https://bookstore-gvbx.onrender.com/user/signup", userInfo)
+      .post(`${BASE_URL}/user/signup`, userInfo)
       .then((res) => {
         console.log(res.data);
-        localStorage.setItem("token", res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));
-        if (localStorage.getItem("token")) {
-          toast.success("Signup successful!");
-          navigate("/");
+        if (localStorage.getItem("user")) {
+          toast.success("Signup successful! Login to your account");
+          setTimeout(() => {
+            navigate("/login");
+            window.location.reload();
+          }, 1500);
         }
       })
       .catch((error) => {

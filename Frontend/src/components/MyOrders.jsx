@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { useTheme } from "../contexts/ThemeContext";
+import { BASE_URL } from "../lib/base-url";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
@@ -18,7 +19,7 @@ export default function MyOrders() {
   const fetchOrders = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("https://bookstore-gvbx.onrender.com/order", {
+      const response = await axios.get(`${BASE_URL}/order`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
@@ -42,7 +43,7 @@ export default function MyOrders() {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
-        `https://bookstore-gvbx.onrender.com/order/cancel/${orderId}`,
+        `${BASE_URL}/order/cancel/${orderId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

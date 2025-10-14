@@ -17,11 +17,12 @@ export default function BookDetailPage() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const { theme } = useTheme();
   const { refreshCart } = useCart();
+  const { BASE_URL } = useBaseUrl();
 
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await axios.get(`https://bookstore-gvbx.onrender.com/book/${id}`, {
+        const response = await axios.get(`${BASE_URL}/book/${id}`, {
           withCredentials: true,
         });
         setBook(response.data);
@@ -46,7 +47,7 @@ export default function BookDetailPage() {
 
     try {
       await axios.post(
-        "https://bookstore-gvbx.onrender.com/cart/add",
+        `${BASE_URL}/cart/add`,
         { bookId: book._id, quantity },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -71,7 +72,7 @@ export default function BookDetailPage() {
 
     try {
       await axios.post(
-        "https://bookstore-gvbx.onrender.com/favorite/toggle",
+        `${BASE_URL}/favorite/toggle`,
         { bookId: book._id },
         {
           headers: { Authorization: `Bearer ${token}` },

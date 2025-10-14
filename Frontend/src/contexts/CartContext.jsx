@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
+import { BASE_URL } from "../lib/base-url";
 
 const CartContext = createContext();
 
@@ -16,7 +17,7 @@ export function CartProvider({ children }) {
     }
 
     try {
-      const response = await axios.get("https://bookstore-gvbx.onrender.com/cart", {
+      const response = await axios.get(`${BASE_URL}/cart`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });

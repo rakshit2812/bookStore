@@ -32,5 +32,6 @@ export const getUser = (token) => {
         return jwt.verify(token , SignatureKey,)
     } catch (error) {
         console.log("Error encountered in getting user", error);
+        return null;
     }
 }
