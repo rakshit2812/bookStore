@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useConfirmation } from "../../contexts/ConfirmationContext";
 import { BASE_URL } from "../../lib/base-url";
 
 export default function ManageBooks({ theme }) {
@@ -11,6 +12,7 @@ export default function ManageBooks({ theme }) {
   const [modalMode, setModalMode] = useState("add"); // "add" or "edit"
   const [selectedBook, setSelectedBook] = useState(null);
   const [bookToDelete, setBookToDelete] = useState(null);
+  const { showConfirmation } = useConfirmation();
   
   // Search and Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -136,9 +138,16 @@ export default function ManageBooks({ theme }) {
         });
         toast.success("Book added successfully!");
       } else {
-        if (!window.confirm("Are you sure you want to update this book?")) {
-          return;
-        }
+        const confirmed = await showConfirmation({
+          title: 'Update Book',
+          message: 'Are you sure you want to update this book? All changes will be saved.',
+          confirmText: 'Update Book',
+          cancelText: 'Cancel',
+          type: 'info',
+        });
+
+        if (!confirmed) return;
+
         await axios.put(`${BASE_URL}/admin/books/${selectedBook._id}`, bookData, {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,

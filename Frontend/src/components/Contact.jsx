@@ -3,7 +3,6 @@ import Navbar from "./Navbar";
 import emailjs from "@emailjs/browser";
 // import { Link } from "react-router-dom";
 import Footer from "./Footer";
-import About from "./About";
 import Confirmation from "./Confirmation";
 
 export default function Contact() {

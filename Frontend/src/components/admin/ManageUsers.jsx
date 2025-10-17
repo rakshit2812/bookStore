@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useConfirmation } from "../../contexts/ConfirmationContext";
 import { BASE_URL } from "../../lib/base-url";
 
 export default function ManageUsers({ theme }) {
@@ -9,6 +10,7 @@ export default function ManageUsers({ theme }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedUserDetails, setSelectedUserDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const { showConfirmation } = useConfirmation();
 
   useEffect(() => {
     fetchUsers();
@@ -49,9 +51,15 @@ export default function ManageUsers({ theme }) {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user? This action cannot be undone and will remove all their data.")) {
-      return;
-    }
+    const confirmed = await showConfirmation({
+      title: 'Delete User',
+      message: 'Are you sure you want to delete this user? This action cannot be undone and will remove all their data including orders and favorites.',
+      confirmText: 'Delete User',
+      cancelText: 'Cancel',
+      type: 'danger',
+    });
+
+    if (!confirmed) return;
 
     const token = localStorage.getItem("token");
     try {

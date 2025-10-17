@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { useTheme } from "../contexts/ThemeContext";
+import { useConfirmation } from "../contexts/ConfirmationContext";
 import { BASE_URL } from "../lib/base-url";
 
 export default function MyOrders() {
@@ -11,6 +12,7 @@ export default function MyOrders() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { theme } = useTheme();
+  const { showConfirmation } = useConfirmation();
 
   useEffect(() => {
     fetchOrders();
@@ -38,7 +40,15 @@ export default function MyOrders() {
   };
 
   const handleCancelOrder = async (orderId) => {
-    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+    const confirmed = await showConfirmation({
+      title: 'Cancel Order',
+      message: 'Are you sure you want to cancel this order? This action cannot be undone.',
+      confirmText: 'Cancel Order',
+      cancelText: 'Keep Order',
+      type: 'danger',
+    });
+
+    if (!confirmed) return;
 
     const token = localStorage.getItem("token");
     try {

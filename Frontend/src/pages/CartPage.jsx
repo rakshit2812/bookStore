@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
+import { useConfirmation } from "../contexts/ConfirmationContext";
 import { BASE_URL } from "../lib/base-url";
 
 export default function CartPage() {
@@ -14,6 +15,7 @@ export default function CartPage() {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { refreshCart } = useCart();
+  const { showConfirmation } = useConfirmation();
 
   useEffect(() => {
     fetchCart();
@@ -81,7 +83,16 @@ export default function CartPage() {
 
   const handleClearCart = async () => {
     const token = localStorage.getItem("token");
-    if (!window.confirm("Are you sure you want to clear your cart?")) return;
+    
+    const confirmed = await showConfirmation({
+      title: 'Clear Cart',
+      message: 'Are you sure you want to clear your cart? This action cannot be undone.',
+      confirmText: 'Clear Cart',
+      cancelText: 'Cancel',
+      type: 'warning',
+    });
+
+    if (!confirmed) return;
 
     try {
       const response = await axios.delete(`${BASE_URL}/cart/clear`, {
