@@ -11,6 +11,7 @@ import userRoute from "./routes/user_route.js";
 import cartRoute from "./routes/cart_route.js";
 import orderRoute from "./routes/order_route.js";
 import favoriteRoute from "./routes/favorite_route.js";
+import adminRoute from "./routes/admin_route.js";
 
 const app = express();
 app.use(cookieParser());
@@ -39,5 +40,6 @@ app.use("/user", userRoute);
 app.use("/cart", cartRoute);
 app.use("/order", orderRoute);
 app.use("/favorite", favoriteRoute);
+app.use("/admin", adminRoute);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

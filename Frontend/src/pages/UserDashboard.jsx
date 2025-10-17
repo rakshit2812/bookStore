@@ -63,9 +63,9 @@ export default function UserDashboard() {
       <Navbar />
 
       <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-12">
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 mt-12">
           {/* Sidebar */}
-          <div className={`lg:w-64 flex-shrink-0`}>
+          <div className={`lg:w-[296px] flex-shrink-0`}>
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -86,18 +86,16 @@ export default function UserDashboard() {
             >
               {/* User Info */}
               <div className={`p-6 border-b ${theme === "dark" ? "border-slate-800" : "border-gray-200"}`}>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col items-center gap-3 text-center">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
                     {user?.fullname?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  <div>
-                    <p className={`font-bold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
-                      {user?.fullname || "User"}
-                    </p>
-                    <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                      {user?.email || "user@email.com"}
-                    </p>
-                  </div>
+                  <p className={`mt-2 font-bold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                    {user?.fullname || "User"}
+                  </p>
+                  <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                    {user?.email || "user@email.com"}
+                  </p>
                 </div>
               </div>
 

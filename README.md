@@ -94,7 +94,6 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend API: https://bookstore-gvbx.onrender.com
 
----
 
 ## 📖 Usage Guide
 

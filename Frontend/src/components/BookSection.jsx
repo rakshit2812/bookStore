@@ -241,9 +241,10 @@ export default function BookSection({ title, endpoint, viewAllLink, genre, color
             {/* Genre Filter */}
             {genre && genres.length > 0 && (
               <select
-                value={selectedGenre}
+                defaultValue={selectedGenre}
                 onChange={(e) => setSelectedGenre(e.target.value)}
-                className={`px-4 py-2 rounded-lg border focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+                // className="select select-neutral"
+                className={`select select-neutral ${
                   theme === "dark"
                     ? "bg-slate-800 border-slate-700 text-white"
                     : "bg-white border-gray-300 text-gray-900"

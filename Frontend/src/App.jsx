@@ -7,6 +7,7 @@ import BookDetailPage from './pages/BookDetailPage'
 import CartPage from './pages/CartPage'
 import CheckoutPage from './pages/CheckoutPage'
 import UserDashboard from './pages/UserDashboard'
+import AdminDashboard from './pages/AdminDashboard'
 import {Routes , Route, Navigate} from "react-router-dom"
 import Signup from './components/Signup'
 import LoginPage from './components/LoginPage'
@@ -28,6 +29,7 @@ export default function App() {
             <Route path = "/cart" element = {localStorage.getItem("token")?<CartPage/>:<Navigate to = "/login"/>}/>
             <Route path = "/checkout" element = {localStorage.getItem("token")?<CheckoutPage/>:<Navigate to = "/login"/>}/>
             <Route path = "/dashboard/*" element = {localStorage.getItem("token")?<UserDashboard/>:<Navigate to = "/login"/>}/>
+            <Route path = "/admin/*" element = {localStorage.getItem("token")?<AdminDashboard/>:<Navigate to = "/login"/>}/>
             <Route path = "/course" element = {localStorage.getItem("token")?<Course/>:<Navigate to = "/signup"/>}/>
             <Route path = "/signup" element = {<Signup/>}/>
             <Route path = "/login" element = {<LoginPage/>}/>

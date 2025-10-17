@@ -13,10 +13,12 @@ export default function BooksPage() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedGenre, setSelectedGenre] = useState(searchParams.get("genre") || "all");
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") || "all");
   const [sortBy, setSortBy] = useState(searchParams.get("sort") || "newest");
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   const [debouncedSearch, setDebouncedSearch] = useState(searchParams.get("search") || "");
   const [genres, setGenres] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { theme } = useTheme();
@@ -30,7 +32,7 @@ export default function BooksPage() {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Fetch genres
+  // Fetch genres and categories
   useEffect(() => {
     const fetchGenres = async () => {
       try {
@@ -42,7 +44,20 @@ export default function BooksPage() {
         console.error("Error fetching genres:", error);
       }
     };
+    
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/book/categories`, {
+          withCredentials: true,
+        });
+        setCategories(["all", ...response.data]);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    
     fetchGenres();
+    fetchCategories();
   }, []);
 
   // Fetch books
@@ -53,6 +68,7 @@ export default function BooksPage() {
         const params = new URLSearchParams();
         if (debouncedSearch) params.append("search", debouncedSearch);
         if (selectedGenre !== "all") params.append("genre", selectedGenre);
+        if (selectedCategory !== "all") params.append("category", selectedCategory);
         if (sortBy) params.append("sortBy", sortBy);
         params.append("page", currentPage);
 
@@ -71,7 +87,7 @@ export default function BooksPage() {
     };
 
     fetchBooks();
-  }, [debouncedSearch, selectedGenre, sortBy, currentPage]);
+  }, [debouncedSearch, selectedGenre, selectedCategory, sortBy, currentPage]);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -80,6 +96,11 @@ export default function BooksPage() {
 
   const handleGenreChange = (e) => {
     setSelectedGenre(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
     setCurrentPage(1);
   };
 
@@ -308,17 +329,34 @@ export default function BooksPage() {
 
           {/* Filters Row */}
           <div className="flex flex-col md:flex-row gap-4">
-            {/* Genre Filter */}
+            {/* Category Filter */}
             <select
-              value={selectedGenre}
-              onChange={handleGenreChange}
-              className={`px-4 py-3 rounded-lg border focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+              defaultValue={selectedCategory}
+              onChange={handleCategoryChange}
+              className={`select select-neutral ${
                 theme === "dark"
                   ? "bg-slate-800 border-slate-700 text-white"
                   : "bg-white border-gray-300 text-gray-900"
               }`}
             >
-              {genres.map((genre) => (
+              {categories && categories.length > 0 && categories.map((category) => (
+                <option key={category} value={category}>
+                  {category === "all" ? "All Categories" : category}
+                </option>
+              ))}
+            </select>
+
+            {/* Genre Filter */}
+            <select
+              defaultValue={selectedGenre}
+              onChange={handleGenreChange}
+              className={`select select-neutral ${
+                theme === "dark"
+                  ? "bg-slate-800 border-slate-700 text-white"
+                  : "bg-white border-gray-300 text-gray-900"
+              }`}
+            >
+              {genres && genres.length > 0 && genres.map((genre) => (
                 <option key={genre} value={genre}>
                   {genre === "all" ? "All Genres" : genre}
                 </option>
@@ -327,9 +365,9 @@ export default function BooksPage() {
 
             {/* Sort Filter */}
             <select
-              value={sortBy}
+              defaultValue={sortBy}
               onChange={handleSortChange}
-              className={`px-4 py-3 rounded-lg border focus:ring-2 focus:ring-pink-500 focus:border-transparent ${
+              className={`select select-neutral ${
                 theme === "dark"
                   ? "bg-slate-800 border-slate-700 text-white"
                   : "bg-white border-gray-300 text-gray-900"

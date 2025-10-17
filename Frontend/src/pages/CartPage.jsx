@@ -112,14 +112,14 @@ export default function CartPage() {
   const isEmpty = !cart || cart.items.length === 0;
   const subtotal = cart?.totalAmount || 0;
   const shippingCharge = subtotal > 500 ? 0 : 50;
-  const tax = subtotal * 0.18;
+  const tax = subtotal * 0.12;
   const total = subtotal + shippingCharge + tax;
 
   return (
     <div className={theme === "dark" ? "bg-slate-950 min-h-screen" : "bg-gray-50 min-h-screen"}>
       <Navbar />
 
-      <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-12">
+      <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-12 mt-12">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className={`text-4xl font-bold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
@@ -277,7 +277,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-                      Tax (18% GST)
+                      Tax (12% GST)
                     </span>
                     <span className={theme === "dark" ? "text-white" : "text-gray-900"}>
                       ₹{tax.toFixed(2)}

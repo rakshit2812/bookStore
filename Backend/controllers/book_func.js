@@ -169,9 +169,20 @@ export const getUpcomingBooks = async (req, res) => {
 export const getGenres = async (req, res) => {
     try {
         const genres = await Book.distinct('genre');
-        res.status(200).json(genres);
+        res.status(200).json(genres.filter(Boolean)); // Filter out null/undefined
     } catch (error) {
         console.log("Error in getGenres:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// Get all categories
+export const getCategories = async (req, res) => {
+    try {
+        const categories = await Book.distinct('category');
+        res.status(200).json(categories.filter(Boolean)); // Filter out null/undefined
+    } catch (error) {
+        console.log("Error in getCategories:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };

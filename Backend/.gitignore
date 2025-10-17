@@ -40,3 +40,5 @@ Thumbs.db
 backend/dist/
 backend/build/
 
+# seeding files
+adminSeeding.js

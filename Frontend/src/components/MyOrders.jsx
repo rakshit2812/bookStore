@@ -112,7 +112,7 @@ export default function MyOrders() {
   }
 
   return (
-    <div>
+    <div className="">
       <h2 className={`text-3xl font-bold mb-6 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
         My Orders
       </h2>

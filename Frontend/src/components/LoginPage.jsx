@@ -33,7 +33,12 @@ export default function LoginPage() {
         if (res.data.user.email) {
           toast.success("Login successful!");
           setTimeout(() => {
-            navigate("/");
+            // Redirect to admin dashboard if user is admin
+            if (res.data.user.role === "admin") {
+              navigate("/admin");
+            } else {
+              navigate("/");
+            }
             window.location.reload();
           }, 1000);
         }

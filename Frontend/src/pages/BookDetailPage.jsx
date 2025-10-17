@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
+import { BASE_URL } from "../lib/base-url";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -17,7 +18,6 @@ export default function BookDetailPage() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const { theme } = useTheme();
   const { refreshCart } = useCart();
-  const { BASE_URL } = useBaseUrl();
 
   useEffect(() => {
     const fetchBook = async () => {

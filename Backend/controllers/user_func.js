@@ -21,6 +21,8 @@ export const handleSignup = async(req,res) => {
             fullname : newUser.fullname,
             email : newUser.email,
             id : newUser._id,
+            role : newUser.role,
+            avatar : newUser.avatar || ""
         }})
     } catch (error) {
         console.log("signup error" , error);
@@ -48,6 +50,8 @@ export const handleLogin = async(req,res) => {
                     fullname : user.fullname,
                     email : user.email,
                     id : user._id,
+                    role : user.role,
+                    avatar : user.avatar || ""
                 }
             })
     } catch (error) {

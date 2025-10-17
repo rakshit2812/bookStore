@@ -11,7 +11,8 @@ export const setUser = (user) => {
     const TokenCode = jwt.sign({
         _id : user._id,
         fullname : user.fullname,
-        email : user.email,     
+        email : user.email,
+        role : user.role || "user"
     }, SignatureKey,)
     // console.log(TokenCode);
     return TokenCode

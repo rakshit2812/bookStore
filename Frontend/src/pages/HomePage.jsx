@@ -15,7 +15,7 @@ export default function HomePage() {
       <EnhancedBanner />
       
       {/* Top Rated Books Section - Purple Theme */}
-      <div className="bg-gradient-to-br from-purple-50 via-lavender-50 to-white dark:from-slate-900 dark:via-purple-950 dark:to-slate-950">
+      <div className="bg-gradient-to-br from-purple-50 via-lavender-50 to-white dark:from-slate-900 dark:via-purple-950 dark:to-slate-950 ">
         <BookSection 
           title="Top Rated Books"
           endpoint="featured"
