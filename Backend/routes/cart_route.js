@@ -6,8 +6,12 @@ import {
     removeFromCart,
     clearCart
 } from "../controllers/cart_func.js";
+import { requireAuth } from "../middlewares/midAuth.js";
 
 const router = express.Router();
+
+// All cart routes require authentication
+router.use(requireAuth);
 
 router.get("/", getCart);
 router.post("/add", addToCart);

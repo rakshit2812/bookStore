@@ -4,6 +4,7 @@ import axios from "axios";
 import { User, ShoppingCart, Sun, Moon } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
+import { getUserData } from "../utils/auth";
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
@@ -11,6 +12,19 @@ export default function Navbar() {
   const location = useLocation();
 
   const [sticky, setSticky] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check authentication status on mount and location changes
+  useEffect(() => {
+    const checkAuth = () => {
+      const user = getUserData();
+      setIsAuthenticated(!!user);
+    };
+    
+    checkAuth();
+    // Re-check on location change (e.g., after login/logout)
+  }, [location.pathname]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) {
@@ -100,7 +114,7 @@ export default function Navbar() {
               )}
             </button>
 
-            {localStorage.getItem("token") ? (
+            {isAuthenticated ? (
               <>
                 {/* Cart Icon */}
                 <Link

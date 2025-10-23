@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
 import { BASE_URL } from "../lib/base-url";
+import { getUserData } from "../utils/auth";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -28,17 +29,15 @@ export default function CheckoutPage() {
   }, []);
 
   const fetchCart = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const user = getUserData();
+    if (!user) {
       navigate("/login");
       return;
     }
 
     try {
-      const response = await axios.get(`${BASE_URL}/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/cart`);
       
       if (!response.data || response.data.items.length === 0) {
         toast.error("Your cart is empty!");
@@ -93,19 +92,15 @@ export default function CheckoutPage() {
 
     if (!validateForm()) return;
 
-    const token = localStorage.getItem("token");
     setProcessing(true);
 
     try {
+      // Cookie sent automatically
       const response = await axios.post(
         `${BASE_URL}/order/create`,
         {
           shippingAddress,
           paymentMethod,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
         }
       );
 
@@ -146,7 +141,7 @@ export default function CheckoutPage() {
 
       <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-12">
         {/* Header */}
-        <h1 className={`text-4xl font-bold mb-8 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+        <h1 className={`text-4xl font-bold mb-8 mt-12 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
           Checkout
         </h1>
 

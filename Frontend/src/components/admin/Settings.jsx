@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
 import { BASE_URL } from "../../lib/base-url";
+import { getUserData, setUserData } from "../../utils/auth";
 
 export default function Settings({ theme }) {
   const [profile, setProfile] = useState({
@@ -20,7 +21,7 @@ export default function Settings({ theme }) {
     confirmPassword: "",
   });
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = getUserData();
   const { toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -29,11 +30,8 @@ export default function Settings({ theme }) {
 
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/admin/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/admin/profile`);
       setProfile({
         fullname: response.data.fullname || "",
         email: response.data.email || "",
@@ -59,23 +57,15 @@ export default function Settings({ theme }) {
     e.preventDefault();
     setSaving(true);
     try {
-      const token = localStorage.getItem("token");
+      // Cookie sent automatically
       const response = await axios.put(
         `${BASE_URL}/admin/profile`,
-        profile,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
+        profile
       );
       toast.success("Profile updated successfully!");
       
-      // Update localStorage
-      const user = JSON.parse(localStorage.getItem("user"));
-      user.fullname = response.data?.user?.fullname;
-      user.email = response.data?.user?.email;
-      user.avatar = response.data?.user?.avatar;
-      localStorage.setItem("user", JSON.stringify(user));
+      // Update sessionStorage
+      setUserData(response.data?.user);
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error(error.response?.data?.message || "Failed to update profile");
@@ -106,16 +96,12 @@ export default function Settings({ theme }) {
     }
 
     try {
-      const token = localStorage.getItem("token");
+      // Cookie sent automatically
       await axios.put(
         `${BASE_URL}/admin/profile/password`,
         {
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
         }
       );
       toast.success("Password changed successfully!");
@@ -320,30 +306,7 @@ export default function Settings({ theme }) {
             </button>
           </div>
 
-          {/* Logout */}
-          <div className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-slate-900" : "bg-white"}`}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30">
-                <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </div>
-              <div>
-                <h3 className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
-                  Sign Out
-                </h3>
-                <p className={`text-xs ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                  Logout from admin panel
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="w-full px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all font-semibold"
-            >
-              Logout
-            </button>
-          </div>
+          
         </div>
       </div>
 

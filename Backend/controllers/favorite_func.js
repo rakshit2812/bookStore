@@ -4,7 +4,7 @@ import {getUser} from "../service/Auth.js";
 // Get user favorites
 export const getFavorites = async (req, res) => {
   try {
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -32,7 +32,7 @@ export const addToFavorites = async (req, res) => {
   try {
     const { bookId } = req.body;
     
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -69,7 +69,7 @@ export const removeFromFavorites = async (req, res) => {
   try {
     const { bookId } = req.params;
     
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -101,7 +101,7 @@ export const toggleFavorite = async (req, res) => {
   try {
     const { bookId } = req.body;
     
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }

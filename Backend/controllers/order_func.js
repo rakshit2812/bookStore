@@ -8,7 +8,7 @@ export const createOrder = async (req, res) => {
   try {
     const { shippingAddress, paymentMethod } = req.body;
     
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -80,7 +80,7 @@ export const createOrder = async (req, res) => {
 // Get user orders
 export const getUserOrders = async (req, res) => {
   try {
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -106,7 +106,7 @@ export const getOrderById = async (req, res) => {
   try {
     const { orderId } = req.params;
     
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -135,7 +135,7 @@ export const cancelOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
     
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }

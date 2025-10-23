@@ -5,8 +5,12 @@ import {
     removeFromFavorites,
     toggleFavorite
 } from "../controllers/favorite_func.js";
+import { requireAuth } from "../middlewares/midAuth.js";
 
 const router = express.Router();
+
+// All favorite routes require authentication
+router.use(requireAuth);
 
 router.get("/", getFavorites);
 router.post("/add", addToFavorites);

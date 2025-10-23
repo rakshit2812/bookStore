@@ -39,13 +39,18 @@ export const handleLogin = async(req,res) => {
             return res.status(400).json({message : "Invalid credentials"});
         }
             const token = setUser(user);
-            res.cookie("id" , token,{
+            
+            // Set token in HttpOnly cookie for security (7 days expiry)
+            res.cookie("authToken" , token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
                 path : "/",
-                domain : "localhost",
             });
+            
             return res.status(200).json({
                 message : "Login successfull", 
-                token : token,
                 user : {
                     fullname : user.fullname,
                     email : user.email,
@@ -57,5 +62,24 @@ export const handleLogin = async(req,res) => {
     } catch (error) {
         console.log("login error" , error);
         return res.status(500).json({message : "Internal server error"});
+    }
+}
+
+export const handleLogout = async(req, res) => {
+    try {
+        // Clear the authentication cookie
+        res.clearCookie("authToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: "/"
+        });
+        
+        return res.status(200).json({
+            message: "Logged out successfully"
+        });
+    } catch (error) {
+        console.log("logout error", error);
+        return res.status(500).json({message: "Internal server error"});
     }
 }

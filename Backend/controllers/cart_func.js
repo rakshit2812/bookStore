@@ -1,24 +1,14 @@
 import Cart from "../models/cart.js";
 import Book from "../models/book.js";
-import {getUser} from "../service/Auth.js";
 
 // Get user cart
 export const getCart = async (req, res) => {
   try {
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    
-    const userData = getUser(token);
-    if (!userData) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-
-    let cart = await Cart.findOne({ user: userData._id }).populate('items.book');
+    // req.user is already validated and attached by requireAuth middleware
+    let cart = await Cart.findOne({ user: req.user._id }).populate('items.book');
     
     if (!cart) {
-      cart = await Cart.create({ user: userData._id, items: [], totalAmount: 0 });
+      cart = await Cart.create({ user: req.user._id, items: [], totalAmount: 0 });
     }
 
     res.status(200).json(cart);
@@ -32,16 +22,7 @@ export const getCart = async (req, res) => {
 export const addToCart = async (req, res) => {
   try {
     const { bookId, quantity = 1 } = req.body;
-    
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    
-    const userData = getUser(token);
-    if (!userData) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
+    // req.user is already validated by middleware
 
     const book = await Book.findById(bookId);
     if (!book) {
@@ -52,10 +33,10 @@ export const addToCart = async (req, res) => {
       return res.status(400).json({ message: "Insufficient stock" });
     }
 
-    let cart = await Cart.findOne({ user: userData._id });
+    let cart = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
-      cart = new Cart({ user: userData._id, items: [] });
+      cart = new Cart({ user: req.user._id, items: [] });
     }
 
     const existingItem = cart.items.find(item => item.book.toString() === bookId);
@@ -87,18 +68,9 @@ export const addToCart = async (req, res) => {
 export const updateCartItem = async (req, res) => {
   try {
     const { bookId, quantity } = req.body;
-    
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    
-    const userData = getUser(token);
-    if (!userData) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
+    // req.user is already validated by middleware
 
-    const cart = await Cart.findOne({ user: userData._id });
+    const cart = await Cart.findOne({ user: req.user._id });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
@@ -132,18 +104,9 @@ export const updateCartItem = async (req, res) => {
 export const removeFromCart = async (req, res) => {
   try {
     const { bookId } = req.params;
-    
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    
-    const userData = getUser(token);
-    if (!userData) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
+    // req.user is already validated by middleware
 
-    const cart = await Cart.findOne({ user: userData._id });
+    const cart = await Cart.findOne({ user: req.user._id });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
@@ -166,17 +129,9 @@ export const removeFromCart = async (req, res) => {
 // Clear cart
 export const clearCart = async (req, res) => {
   try {
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    
-    const userData = getUser(token);
-    if (!userData) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
+    // req.user is already validated by middleware
 
-    const cart = await Cart.findOne({ user: userData._id });
+    const cart = await Cart.findOne({ user: req.user._id });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }

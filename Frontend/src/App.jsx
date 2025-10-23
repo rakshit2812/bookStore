@@ -111,8 +111,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            
-            {/* <Route path = "/course" element = {localStorage.getItem("token")?<Course/>:<Navigate to = "/signup"/>}/> */}
             </Routes>
             <Toaster />
             <ConfirmationModal />

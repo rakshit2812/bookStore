@@ -6,6 +6,9 @@ import Footer from "../components/Footer";
 import MyOrders from "../components/MyOrders";
 import FavoritesSection from "../components/FavoritesSection";
 import { useTheme } from "../contexts/ThemeContext";
+import { getUserData, clearUserData } from "../utils/auth";
+import { BASE_URL } from "../lib/base-url";
+import toast from "react-hot-toast";
 
 export default function UserDashboard() {
   const [user, setUser] = useState(null);
@@ -15,17 +18,31 @@ export default function UserDashboard() {
   const { theme } = useTheme();
 
   useEffect(() => {
-    // Get user info from localStorage or fetch from API
-    const userInfo = localStorage.getItem("user");
+    // Get user info from sessionStorage
+    const userInfo = getUserData();
     if (userInfo) {
-      setUser(JSON.parse(userInfo));
+      setUser(userInfo);
     }
-  }, []);
+  }, [location.pathname]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      // Call backend to clear the HttpOnly cookie
+      // withCredentials is now set globally, cookies sent automatically
+      await axios.post(`${BASE_URL}/user/logout`, {});
+      
+      // Clear user data from sessionStorage
+      clearUserData();
+      
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if backend call fails, clear local data
+      clearUserData();
+      toast.success("Logged out successfully");
+      navigate("/login");
+    }
   };
 
   const menuItems = [

@@ -8,6 +8,7 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
 import { BASE_URL } from "../lib/base-url";
+import { getUserData } from "../utils/auth";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -22,36 +23,36 @@ export default function CartPage() {
   }, []);
 
   const fetchCart = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    // Check if user is authenticated (cookie-based auth)
+    const user = getUserData();
+    if (!user) {
       navigate("/login");
       return;
     }
 
     try {
-      const response = await axios.get(`${BASE_URL}/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically, no need for headers
+      const response = await axios.get(`${BASE_URL}/cart`);
       setCart(response.data);
     } catch (error) {
       console.error("Error fetching cart:", error);
-      toast.error("Failed to load cart");
+      if (error.response?.status === 401) {
+        toast.error("Please login to view cart");
+        navigate("/login");
+      } else {
+        toast.error("Failed to load cart");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handleUpdateQuantity = async (bookId, newQuantity) => {
-    const token = localStorage.getItem("token");
     try {
+      // Cookie sent automatically
       const response = await axios.put(
         `${BASE_URL}/cart/update`,
-        { bookId, quantity: newQuantity },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
+        { bookId, quantity: newQuantity }
       );
       setCart(response.data);
       refreshCart(); // Update cart count in navbar
@@ -63,15 +64,9 @@ export default function CartPage() {
   };
 
   const handleRemoveItem = async (bookId) => {
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.delete(
-        `${BASE_URL}/cart/remove/${bookId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      );
+      // Cookie sent automatically
+      const response = await axios.delete(`${BASE_URL}/cart/remove/${bookId}`);
       setCart(response.data);
       refreshCart(); // Update cart count in navbar
       toast.success("Item removed from cart");
@@ -82,8 +77,6 @@ export default function CartPage() {
   };
 
   const handleClearCart = async () => {
-    const token = localStorage.getItem("token");
-    
     const confirmed = await showConfirmation({
       title: 'Clear Cart',
       message: 'Are you sure you want to clear your cart? This action cannot be undone.',
@@ -95,10 +88,8 @@ export default function CartPage() {
     if (!confirmed) return;
 
     try {
-      const response = await axios.delete(`${BASE_URL}/cart/clear`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.delete(`${BASE_URL}/cart/clear`);
       setCart(response.data);
       refreshCart(); // Update cart count in navbar
       toast.success("Cart cleared");

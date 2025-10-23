@@ -17,12 +17,9 @@ export default function ManageUsers({ theme }) {
   }, []);
 
   const fetchUsers = async () => {
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${BASE_URL}/admin/users`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/admin/users`);
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -33,13 +30,10 @@ export default function ManageUsers({ theme }) {
   };
 
   const fetchUserDetails = async (userId) => {
-    const token = localStorage.getItem("token");
     setLoadingDetails(true);
     try {
-      const response = await axios.get(`${BASE_URL}/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/admin/users/${userId}`);
       setSelectedUserDetails(response.data);
       setShowModal(true);
     } catch (error) {
@@ -61,12 +55,9 @@ export default function ManageUsers({ theme }) {
 
     if (!confirmed) return;
 
-    const token = localStorage.getItem("token");
     try {
-      await axios.delete(`${BASE_URL}/admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      await axios.delete(`${BASE_URL}/admin/users/${userId}`);
       toast.success("User deleted successfully!");
       setShowModal(false);
       fetchUsers();

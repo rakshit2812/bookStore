@@ -1,7 +1,7 @@
 import {getUser} from "../service/Auth.js"
 
 export const checkAdminAuth = (req, res, next) => {
-    const token = req.cookies?.id || req.headers.authorization?.split(" ")[1];
+    const token = req.cookies?.authToken || req.headers.authorization?.split(" ")[1];
     
     if (!token) {
         return res.status(401).json({ message: "Unauthorized - No token provided" });
@@ -10,7 +10,7 @@ export const checkAdminAuth = (req, res, next) => {
     const userData = getUser(token);
     
     if (!userData) {
-        return res.status(401).json({ message: "Invalid token" });
+        return res.status(401).json({ message: "Invalid or expired token" });
     }
     
     if (userData.role !== "admin") {

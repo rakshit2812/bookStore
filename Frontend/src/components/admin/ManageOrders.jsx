@@ -15,16 +15,13 @@ export default function ManageOrders({ theme }) {
   }, [filterStatus]);
 
   const fetchOrders = async () => {
-    const token = localStorage.getItem("token");
     try {
       const url = filterStatus === "all" 
         ? `${BASE_URL}/admin/orders` 
         : `${BASE_URL}/admin/orders?status=${filterStatus}`;
       
-      const response = await axios.get(url, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(url);
       setOrders(response.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -35,12 +32,9 @@ export default function ManageOrders({ theme }) {
   };
 
   const viewOrderDetails = async (orderId) => {
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${BASE_URL}/admin/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/admin/orders/${orderId}`);
       setSelectedOrder(response.data);
       setShowModal(true);
     } catch (error) {
@@ -50,15 +44,11 @@ export default function ManageOrders({ theme }) {
   };
 
   const updateOrderStatus = async (orderId, newStatus) => {
-    const token = localStorage.getItem("token");
     try {
+      // Cookie sent automatically
       await axios.put(
         `${BASE_URL}/admin/orders/${orderId}/status`,
-        { orderStatus: newStatus },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
+        { orderStatus: newStatus }
       );
       toast.success("Order status updated successfully");
       fetchOrders();

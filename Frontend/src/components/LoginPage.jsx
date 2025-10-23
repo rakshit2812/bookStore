@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../lib/base-url";
+import { setUserData } from "../utils/auth";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -19,28 +20,22 @@ export default function LoginPage() {
       email: data.email,
       password: data.password,
     };
+    // withCredentials is now set globally, cookies sent/received automatically
     await axios
-      .post(`${BASE_URL}/user/login`, userInfo, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
+      .post(`${BASE_URL}/user/login`, userInfo)
       .then((res) => {
         console.log(res.data);
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        // Store user data in sessionStorage (token is in HttpOnly cookie)
+        setUserData(res.data.user);
+        
         if (res.data.user.email) {
           toast.success("Login successful!");
-          setTimeout(() => {
-            // Redirect to admin dashboard if user is admin
-            if (res.data.user.role === "admin") {
-              navigate("/admin");
-            } else {
-              navigate("/");
-            }
-            window.location.reload();
-          }, 1000);
+          // Redirect to admin dashboard if user is admin
+          if (res.data.user.role === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
         }
       })
       .catch((error) => {

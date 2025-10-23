@@ -6,8 +6,9 @@ import { Heart, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
 import { BASE_URL } from "../lib/base-url";
+import { getUserData } from "../utils/auth";
 
-export default function BookCard({ book }) {
+export default function BookCard({ book, onFavoriteToggle }) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const { theme } = useTheme();
@@ -68,23 +69,18 @@ export default function BookCard({ book }) {
   const categoryStyle = getCategoryStyle(book.category);
 
   const handleAddToCart = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const user = getUserData();
+    if (!user) {
       toast.error("Please login to add items to cart");
       return;
     }
 
     setIsAddingToCart(true);
     try {
+      // Cookie sent automatically
       await axios.post(
         `${BASE_URL}/cart/add`,
-        { bookId: book._id, quantity: 1 },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        { bookId: book._id, quantity: 1 }
       );
       refreshCart(); // Update cart count and items in context
       toast.success("Added to cart!");
@@ -97,17 +93,11 @@ export default function BookCard({ book }) {
   };
 
   const handleIncreaseQuantity = async () => {
-    const token = localStorage.getItem("token");
     try {
+      // Cookie sent automatically
       await axios.put(
         `${BASE_URL}/cart/update`,
-        { bookId: book._id, quantity: quantity + 1 },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        { bookId: book._id, quantity: quantity + 1 }
       );
       refreshCart(); // Update cart count and items in context
     } catch (error) {
@@ -117,15 +107,10 @@ export default function BookCard({ book }) {
   };
 
   const handleDecreaseQuantity = async () => {
-    const token = localStorage.getItem("token");
     if (quantity === 1) {
       try {
-        await axios.delete(`${BASE_URL}/cart/remove/${book._id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        });
+        // Cookie sent automatically
+        await axios.delete(`${BASE_URL}/cart/remove/${book._id}`);
         refreshCart(); // Update cart count and items in context
         toast.success("Removed from cart");
       } catch (error) {
@@ -134,15 +119,10 @@ export default function BookCard({ book }) {
       }
     } else {
       try {
+        // Cookie sent automatically
         await axios.put(
           `${BASE_URL}/cart/update`,
-          { bookId: book._id, quantity: quantity - 1 },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
-          }
+          { bookId: book._id, quantity: quantity - 1 }
         );
         refreshCart(); // Update cart count and items in context
       } catch (error) {
@@ -153,22 +133,17 @@ export default function BookCard({ book }) {
   };
 
   const handleToggleFavorite = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const user = getUserData();
+    if (!user) {
       toast.error("Please login to add favorites");
       return;
     }
 
     try {
+      // Cookie sent automatically
       await axios.post(
         `${BASE_URL}/favorite/toggle`,
-        { bookId: book._id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        { bookId: book._id }
       );
       setIsFavorite(!isFavorite);
       toast.success(isFavorite ? "Removed from favorites" : "Added to favorites");

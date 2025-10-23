@@ -19,16 +19,17 @@ export default function MyOrders() {
   }, []);
 
   const fetchOrders = async () => {
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${BASE_URL}/order`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/order`);
       setOrders(response.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
-      toast.error("Failed to load orders");
+      if (error.response?.status === 401) {
+        toast.error("Please login to view orders");
+      } else {
+        toast.error("Failed to load orders");
+      }
     } finally {
       setLoading(false);
     }
@@ -50,16 +51,9 @@ export default function MyOrders() {
 
     if (!confirmed) return;
 
-    const token = localStorage.getItem("token");
     try {
-      await axios.put(
-        `${BASE_URL}/order/cancel/${orderId}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      );
+      // Cookie sent automatically
+      await axios.put(`${BASE_URL}/order/cancel/${orderId}`, {});
       toast.success("Order cancelled successfully");
       fetchOrders(); // Refresh orders
     } catch (error) {

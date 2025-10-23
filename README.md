@@ -71,9 +71,11 @@ cd ../Frontend
 npm install
 ```
 
-Create `.env` file in Frontend directory:
-```env
-VITE_API_URL=https://bookstore-gvbx.onrender.com
+Configure API base URL for the frontend:
+
+Edit `Frontend/src/lib/base-url.ts` and set the backend URL:
+```ts
+export const BASE_URL = "http://localhost:4001";
 ```
 
 4. **Run the Application**
@@ -81,7 +83,7 @@ VITE_API_URL=https://bookstore-gvbx.onrender.com
 **Terminal 1 - Backend:**
 ```bash
 cd Backend
-npm start
+npm run start:dev   # or: npm start
 ```
 
 **Terminal 2 - Frontend:**
@@ -92,7 +94,7 @@ npm run dev
 
 5. **Access the Application**
 - Frontend: http://localhost:5173
-- Backend API: https://bookstore-gvbx.onrender.com
+- Backend API: http://localhost:4001
 
 
 ## 📖 Usage Guide
@@ -198,6 +200,7 @@ bookStore/
 |--------|----------|-------------|
 | POST | `/user/signup` | Create account |
 | POST | `/user/login` | Login user |
+| POST | `/user/logout` | Logout user |
 
 ---
 
@@ -304,9 +307,11 @@ Track Status or Cancel
 ## 🔐 Authentication
 
 - JWT-based authentication
-- Token stored in localStorage
-- Protected routes for cart/checkout/dashboard
-- Auto-redirect to login for protected pages
+- HttpOnly cookie (`authToken`) set by the backend for authenticated sessions
+- Non-sensitive user data is stored in `sessionStorage` for UI purposes
+- Protected routes (cart, orders, favorites) enforced by server middleware
+- Admin routes are guarded by `checkAdminAuth`
+- CORS configured with credentials for `http://localhost:5173`
 
 ---
 

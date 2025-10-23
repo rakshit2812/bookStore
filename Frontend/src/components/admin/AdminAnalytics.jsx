@@ -30,12 +30,9 @@ export default function AdminAnalytics({ theme }) {
   }, []);
 
   const fetchAnalytics = async () => {
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${BASE_URL}/admin/analytics`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/admin/analytics`);
       setAnalytics(response.data);
     } catch (error) {
       console.error("Error fetching analytics:", error);

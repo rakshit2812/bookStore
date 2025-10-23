@@ -9,35 +9,61 @@ import ManageUsers from "../components/admin/ManageUsers";
 import ManageOrders from "../components/admin/ManageOrders";
 import Settings from "../components/admin/Settings";
 import { useTheme } from "../contexts/ThemeContext";
+import { getUserData, clearUserData } from "../utils/auth";
+import { BASE_URL } from "../lib/base-url";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { theme } = useTheme();
 
   useEffect(() => {
-    // Get user info from localStorage
-    const userInfo = localStorage.getItem("user");
-    if (userInfo) {
-      const parsedUser = JSON.parse(userInfo);
-      setUser(parsedUser);
+    const checkAuth = () => {
+      setIsLoading(true);
+      const userData = getUserData();
       
-      // Redirect if not admin
-      if (parsedUser.role !== "admin") {
-        navigate("/");
+      if (!userData) {
+        navigate("/login");
+        return;
       }
-    } else {
-      navigate("/login");
-    }
+
+      setUser(userData);
+      
+      if (userData.role !== "admin") {
+        navigate("/");
+        return;
+      }
+      
+      setIsLoading(false);
+    };
+
+    checkAuth();
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      // Call backend to clear the HttpOnly cookie
+      // withCredentials is now set globally, cookies sent automatically
+      await axios.post(`${BASE_URL}/user/logout`, {});
+      
+      // Clear user data from sessionStorage
+      clearUserData();
+      
+      toast.success("Logged out successfully");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if backend call fails, clear local data
+      clearUserData();
+      toast.success("Logged out successfully");
+      navigate("/login");
+    }
   };
 
   const menuItems = [

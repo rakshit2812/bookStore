@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../lib/base-url";
+import { getUserData } from "../utils/auth";
 
 const CartContext = createContext();
 
@@ -9,22 +10,27 @@ export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
 
   const fetchCartData = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    console.log("🛒 CartContext: Fetching cart data...");
+    const user = getUserData();
+    
+    if (!user) {
+      console.log("❌ CartContext: No user data found in sessionStorage");
       setCartCount(0);
       setCartItems([]);
       return;
     }
 
+    console.log("✅ CartContext: User found, making request to:", `${BASE_URL}/cart`);
+    
     try {
-      const response = await axios.get(`${BASE_URL}/cart`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // withCredentials is now set globally, cookies sent automatically
+      const response = await axios.get(`${BASE_URL}/cart`);
+      console.log("✅ CartContext: Cart data received:", response.data);
       setCartCount(response.data.items?.length || 0);
       setCartItems(response.data.items || []);
     } catch (error) {
-      console.error("Error fetching cart data:", error);
+      console.error("❌ CartContext: Error fetching cart data:", error);
+      console.error("Error details:", error.response?.status, error.response?.data);
       setCartCount(0);
       setCartItems([]);
     }

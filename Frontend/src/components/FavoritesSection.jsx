@@ -15,16 +15,17 @@ export default function FavoritesSection() {
   }, []);
 
   const fetchFavorites = async () => {
-    const token = localStorage.getItem("token");
     try {
-      const response = await axios.get(`${BASE_URL}/favorite`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      const response = await axios.get(`${BASE_URL}/favorite`);
       setFavorites(response.data.books || []);
     } catch (error) {
       console.error("Error fetching favorites:", error);
-      toast.error("Failed to load favorites");
+      if (error.response?.status === 401) {
+        toast.error("Please login to view favorites");
+      } else {
+        toast.error("Failed to load favorites");
+      }
     } finally {
       setLoading(false);
     }

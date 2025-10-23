@@ -122,7 +122,6 @@ export default function ManageBooks({ theme }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const token = localStorage.getItem("token");
     const bookData = {
       ...formData,
       price: parseFloat(formData.price),
@@ -132,10 +131,8 @@ export default function ManageBooks({ theme }) {
 
     try {
       if (modalMode === "add") {
-        await axios.post(`${BASE_URL}/admin/books`, bookData, {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        });
+        // Cookie sent automatically
+        await axios.post(`${BASE_URL}/admin/books`, bookData);
         toast.success("Book added successfully!");
       } else {
         const confirmed = await showConfirmation({
@@ -148,10 +145,8 @@ export default function ManageBooks({ theme }) {
 
         if (!confirmed) return;
 
-        await axios.put(`${BASE_URL}/admin/books/${selectedBook._id}`, bookData, {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        });
+        // Cookie sent automatically
+        await axios.put(`${BASE_URL}/admin/books/${selectedBook._id}`, bookData);
         toast.success("Book updated successfully!");
       }
       setShowModal(false);
@@ -170,12 +165,9 @@ export default function ManageBooks({ theme }) {
   const handleDeleteBook = async () => {
     if (!bookToDelete) return;
 
-    const token = localStorage.getItem("token");
     try {
-      await axios.delete(`${BASE_URL}/admin/books/${bookToDelete._id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
+      // Cookie sent automatically
+      await axios.delete(`${BASE_URL}/admin/books/${bookToDelete._id}`);
       toast.success("Book deleted successfully!");
       setShowDeleteModal(false);
       setBookToDelete(null);

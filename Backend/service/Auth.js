@@ -8,12 +8,13 @@ export const setUser = (user) => {
     if (!SignatureKey) {
       throw new Error("JWT_KEY is not defined in environment variables!7");
     }
+    // Set token expiry to 7 days
     const TokenCode = jwt.sign({
         _id : user._id,
         fullname : user.fullname,
         email : user.email,
         role : user.role || "user"
-    }, SignatureKey,)
+    }, SignatureKey, { expiresIn: '7d' })
     // console.log(TokenCode);
     return TokenCode
 }

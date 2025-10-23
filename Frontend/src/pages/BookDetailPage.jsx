@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
 import { BASE_URL } from "../lib/base-url";
+import { getUserData } from "../utils/auth";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -38,21 +39,18 @@ export default function BookDetailPage() {
   }, [id]);
 
   const handleAddToCart = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const user = getUserData();
+    if (!user) {
       toast.error("Please login to add items to cart");
       navigate("/login");
       return;
     }
 
     try {
+      // Cookie sent automatically
       await axios.post(
         `${BASE_URL}/cart/add`,
-        { bookId: book._id, quantity },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
+        { bookId: book._id, quantity }
       );
       refreshCart(); // Update cart count in navbar
       toast.success("Added to cart!");
@@ -63,21 +61,18 @@ export default function BookDetailPage() {
   };
 
   const handleToggleFavorite = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const user = getUserData();
+    if (!user) {
       toast.error("Please login to add favorites");
       navigate("/login");
       return;
     }
 
     try {
+      // Cookie sent automatically
       await axios.post(
         `${BASE_URL}/favorite/toggle`,
-        { bookId: book._id },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
+        { bookId: book._id }
       );
       setIsFavorite(!isFavorite);
       toast.success(isFavorite ? "Removed from favorites" : "Added to favorites");

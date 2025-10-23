@@ -23,14 +23,9 @@ export default function Signup() {
       .post(`${BASE_URL}/user/signup`, userInfo)
       .then((res) => {
         console.log(res.data);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        if (localStorage.getItem("user")) {
-          toast.success("Signup successful! Login to your account");
-          setTimeout(() => {
-            navigate("/login");
-            window.location.reload();
-          }, 1500);
-        }
+        // No need to store user data on signup, they need to login
+        toast.success("Signup successful! Please login to your account");
+        navigate("/login");
       })
       .catch((error) => {
         if (error.response) {

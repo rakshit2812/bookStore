@@ -1,21 +1,14 @@
 import { Navigate } from 'react-router-dom';
+import { getUserData as getUser } from '../utils/auth';
 
 const getUserData = () => {
-  const token = localStorage.getItem('token');
-  const userString = localStorage.getItem('user');
-
-  if (!token) {
-    return { token: null, user: null };
-  }
-
-  try {
-    const user = userString ? JSON.parse(userString) : null;
-    return { token, user };
-  } catch (error) {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    return { token: null, user: null };
-  }
+  const user = getUser();
+  // For backward compatibility with the rest of the code
+  // Note: token is now in HttpOnly cookie, not accessible from JS
+  return { 
+    token: user ? 'cookie' : null, // Dummy value to indicate authentication
+    user 
+  };
 };
 
 // Role-based access control for routes
