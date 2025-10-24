@@ -5,8 +5,12 @@ import toast from "react-hot-toast";
 import { Heart, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
-import { BASE_URL } from "../lib/base-url";
 import { getUserData } from "../utils/auth";
+import { toggleFavorite } from "../services/favoriteService";
+import { addToCart } from "../services/cartService";
+import { removeFromCart } from "../services/cartService";
+import { updateCartItem } from "../services/cartService";
+import { clearCart } from "../services/cartService";
 
 export default function BookCard({ book, onFavoriteToggle }) {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -78,10 +82,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
     setIsAddingToCart(true);
     try {
       // Cookie sent automatically
-      await axios.post(
-        `${BASE_URL}/cart/add`,
-        { bookId: book._id, quantity: 1 }
-      );
+      await addToCart(book._id, 1);
       refreshCart(); // Update cart count and items in context
       toast.success("Added to cart!");
     } catch (error) {
@@ -95,10 +96,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
   const handleIncreaseQuantity = async () => {
     try {
       // Cookie sent automatically
-      await axios.put(
-        `${BASE_URL}/cart/update`,
-        { bookId: book._id, quantity: quantity + 1 }
-      );
+      await updateCartItem(book._id, quantity + 1);
       refreshCart(); // Update cart count and items in context
     } catch (error) {
       console.error("Error updating cart:", error);
@@ -110,7 +108,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
     if (quantity === 1) {
       try {
         // Cookie sent automatically
-        await axios.delete(`${BASE_URL}/cart/remove/${book._id}`);
+        await removeFromCart(book._id);
         refreshCart(); // Update cart count and items in context
         toast.success("Removed from cart");
       } catch (error) {
@@ -120,10 +118,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
     } else {
       try {
         // Cookie sent automatically
-        await axios.put(
-          `${BASE_URL}/cart/update`,
-          { bookId: book._id, quantity: quantity - 1 }
-        );
+        await updateCartItem(book._id, quantity - 1);
         refreshCart(); // Update cart count and items in context
       } catch (error) {
         console.error("Error updating cart:", error);
@@ -141,10 +136,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
 
     try {
       // Cookie sent automatically
-      await axios.post(
-        `${BASE_URL}/favorite/toggle`,
-        { bookId: book._id }
-      );
+      await toggleFavorite(book._id);
       setIsFavorite(!isFavorite);
       toast.success(isFavorite ? "Removed from favorites" : "Added to favorites");
       if (onFavoriteToggle) onFavoriteToggle();

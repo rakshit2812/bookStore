@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { useConfirmation } from "../../contexts/ConfirmationContext";
-import { BASE_URL } from "../../lib/base-url";
+import { getUsers, getUserById, deleteUser } from "../../services/adminService";
 
 export default function ManageUsers({ theme }) {
   const [users, setUsers] = useState([]);
@@ -19,8 +18,8 @@ export default function ManageUsers({ theme }) {
   const fetchUsers = async () => {
     try {
       // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/admin/users`);
-      setUsers(response.data);
+      const response = await getUsers();
+      setUsers(response);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error("Failed to load users");
@@ -33,8 +32,8 @@ export default function ManageUsers({ theme }) {
     setLoadingDetails(true);
     try {
       // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/admin/users/${userId}`);
-      setSelectedUserDetails(response.data);
+      const response = await getUserById(userId);
+      setSelectedUserDetails(response);
       setShowModal(true);
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -57,7 +56,7 @@ export default function ManageUsers({ theme }) {
 
     try {
       // Cookie sent automatically
-      await axios.delete(`${BASE_URL}/admin/users/${userId}`);
+      await deleteUser(userId);
       toast.success("User deleted successfully!");
       setShowModal(false);
       fetchUsers();

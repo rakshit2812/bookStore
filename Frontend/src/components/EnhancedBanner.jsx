@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 
 export default function EnhancedBanner() {
@@ -12,6 +13,10 @@ export default function EnhancedBanner() {
     if (searchQuery.trim()) {
       navigate(`/books?search=${encodeURIComponent(searchQuery)}`);
     }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
   };
 
   return (
@@ -67,13 +72,26 @@ export default function EnhancedBanner() {
             {/* Search Bar */}
             <form onSubmit={handleSearch} className="relative">
               <div className="flex items-center rounded-full overflow-hidden bg-white shadow-lg">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for books, authors, or genres..."
-                  className="flex-1 px-6 py-4 outline-none bg-white text-[#1E293B] placeholder-[#94A3B8] border-2 border-[#E2E8F0] rounded-l-full focus:border-[#6B46C1] focus:shadow-[0_0_0_4px_rgba(107,70,193,0.1)] transition-all"
-                />
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search for books, authors, or genres..."
+                    className="w-full px-6 py-4 pr-12 outline-none bg-white text-[#1E293B] placeholder-[#94A3B8] border-2 border-[#E2E8F0] rounded-l-full focus:border-[#6B46C1] focus:shadow-[0_0_0_4px_rgba(107,70,193,0.1)] transition-all"
+                  />
+                  {/* Clear Button */}
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={handleClearSearch}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-gray-100 transition-all"
+                      title="Clear search"
+                    >
+                      <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+                    </button>
+                  )}
+                </div>
                 <button
                   type="submit"
                   className="px-8 py-4 text-white font-semibold rounded-r-full transition-all shadow-[0_4px_12px_rgba(233,30,140,0.3)] hover:shadow-[0_6px_20px_rgba(233,30,140,0.4)]"

@@ -4,9 +4,11 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BookCard from "../components/BookCard";
+import SearchBar from "../components/common/SearchBar";
+import Filters from "../components/common/Filters";
 import { useTheme } from "../contexts/ThemeContext";
 import { BookOpen, Star } from "lucide-react";
-import { BASE_URL } from "../lib/base-url";
+import { getGenres, getCategories, filterBooks } from "../services/bookService";
 
 export default function BooksPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,10 +38,8 @@ export default function BooksPage() {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/book/genres`, {
-          withCredentials: true,
-        });
-        setGenres(["all", ...response.data]);
+        const response = await getGenres();
+        setGenres(["all", ...response]);
       } catch (error) {
         console.error("Error fetching genres:", error);
       }
@@ -47,10 +47,8 @@ export default function BooksPage() {
     
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/book/categories`, {
-          withCredentials: true,
-        });
-        setCategories(["all", ...response.data]);
+        const response = await getCategories();
+        setCategories(["all", ...response]);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -72,13 +70,10 @@ export default function BooksPage() {
         if (sortBy) params.append("sortBy", sortBy);
         params.append("page", currentPage);
 
-        const response = await axios.get(
-          `${BASE_URL}/book/filter?${params.toString()}`,
-          { withCredentials: true }
-        );
+        const response = await filterBooks(params);
 
-        setBooks(response.data.books || []);
-        setTotalPages(response.data.totalPages || 1);
+        setBooks(response.books || []);
+        setTotalPages(response.totalPages || 1);
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {
@@ -94,6 +89,11 @@ export default function BooksPage() {
     setCurrentPage(1);
   };
 
+  const handleSearchClear = () => {
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
   const handleGenreChange = (e) => {
     setSelectedGenre(e.target.value);
     setCurrentPage(1);
@@ -106,6 +106,13 @@ export default function BooksPage() {
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setSelectedCategory("all");
+    setSelectedGenre("all");
+    setSortBy("newest");
     setCurrentPage(1);
   };
 
@@ -300,93 +307,28 @@ export default function BooksPage() {
         {/* Search and Filters */}
         <div className="mb-8 space-y-4">
           {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Search for books, authors, or titles..."
-              className={`w-full px-6 py-4 rounded-lg border-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all ${
-                theme === "dark"
-                  ? "bg-slate-800 border-slate-700 text-white placeholder-gray-500"
-                  : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
-              }`}
-            />
-            <svg
-              className="absolute right-4 top-4 w-6 h-6 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
+          <SearchBar
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onClear={handleSearchClear}
+            placeholder="Search for books, authors, or titles..."
+          />
 
           {/* Filters Row */}
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Category Filter */}
-            <select
-              defaultValue={selectedCategory}
-              onChange={handleCategoryChange}
-              className={`select select-neutral ${
-                theme === "dark"
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-white border-gray-300 text-gray-900"
-              }`}
-            >
-              {categories && categories.length > 0 && categories.map((category) => (
-                <option key={category} value={category}>
-                  {category === "all" ? "All Categories" : category}
-                </option>
-              ))}
-            </select>
-
-            {/* Genre Filter */}
-            <select
-              defaultValue={selectedGenre}
-              onChange={handleGenreChange}
-              className={`select select-neutral ${
-                theme === "dark"
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-white border-gray-300 text-gray-900"
-              }`}
-            >
-              {genres && genres.length > 0 && genres.map((genre) => (
-                <option key={genre} value={genre}>
-                  {genre === "all" ? "All Genres" : genre}
-                </option>
-              ))}
-            </select>
-
-            {/* Sort Filter */}
-            <select
-              defaultValue={sortBy}
-              onChange={handleSortChange}
-              className={`select select-neutral ${
-                theme === "dark"
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-white border-gray-300 text-gray-900"
-              }`}
-            >
-              <option value="newest">Newest First</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="rating">Top Rated</option>
-            </select>
-
-            {/* Results Count */}
-            <div className={`flex items-center px-4 py-3 rounded-lg ${
-              theme === "dark" ? "bg-slate-800 text-white" : "bg-white text-gray-900"
-            }`}>
-              <span className="font-semibold">{books.length}</span>
-              <span className="ml-2 text-gray-500">books found</span>
-            </div>
-          </div>
+          <Filters
+            categories={categories}
+            genres={genres}
+            selectedCategory={selectedCategory}
+            selectedGenre={selectedGenre}
+            sortBy={sortBy}
+            onCategoryChange={handleCategoryChange}
+            onGenreChange={handleGenreChange}
+            onSortChange={handleSortChange}
+            onClear={handleClearFilters}
+            showSort={true}
+            showResultsCount={true}
+            resultsCount={books.length}
+          />
         </div>
 
         {/* Loading State */}

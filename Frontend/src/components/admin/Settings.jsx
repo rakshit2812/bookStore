@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../contexts/ThemeContext";
-import { BASE_URL } from "../../lib/base-url";
 import { getUserData, setUserData } from "../../utils/auth";
+import { getAdminProfile, updateAdminProfile, updateAdminPassword } from "../../services/adminService";
 
 export default function Settings({ theme }) {
   const [profile, setProfile] = useState({
@@ -31,11 +30,11 @@ export default function Settings({ theme }) {
   const fetchProfile = async () => {
     try {
       // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/admin/profile`);
+      const response = await getAdminProfile();
       setProfile({
-        fullname: response.data.fullname || "",
-        email: response.data.email || "",
-        avatar: response.data.avatar || "",
+        fullname: response.fullname || "",
+        email: response.email || "",
+        avatar: response.avatar || "",
       });
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -58,10 +57,7 @@ export default function Settings({ theme }) {
     setSaving(true);
     try {
       // Cookie sent automatically
-      const response = await axios.put(
-        `${BASE_URL}/admin/profile`,
-        profile
-      );
+      const response = await updateAdminProfile(profile);
       toast.success("Profile updated successfully!");
       
       // Update sessionStorage
@@ -97,13 +93,7 @@ export default function Settings({ theme }) {
 
     try {
       // Cookie sent automatically
-      await axios.put(
-        `${BASE_URL}/admin/profile/password`,
-        {
-          currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword,
-        }
-      );
+      await updateAdminPassword(passwordData);
       toast.success("Password changed successfully!");
       setShowPasswordModal(false);
       setPasswordData({

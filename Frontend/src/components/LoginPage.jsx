@@ -5,6 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../lib/base-url";
 import { setUserData } from "../utils/auth";
+import { handleLogin } from "../services/userService";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -20,30 +21,54 @@ export default function LoginPage() {
       email: data.email,
       password: data.password,
     };
-    // withCredentials is now set globally, cookies sent/received automatically
-    await axios
-      .post(`${BASE_URL}/user/login`, userInfo)
-      .then((res) => {
-        console.log(res.data);
-        // Store user data in sessionStorage (token is in HttpOnly cookie)
-        setUserData(res.data.user);
-        
-        if (res.data.user.email) {
+
+    try{
+      const response = await handleLogin(userInfo);
+      // Store user data in sessionStorage (token is in HttpOnly cookie)
+      setUserData(response);
+      if (response.email) {
           toast.success("Login successful!");
           // Redirect to admin dashboard if user is admin
-          if (res.data.user.role === "admin") {
+          if (response.role === "admin") {
             navigate("/admin");
           } else {
             navigate("/");
           }
         }
-      })
-      .catch((error) => {
-        if (error.response) {
+    }
+    catch(error){
+      if (error.response) {
           console.log(error.response.data.message);
           toast.error(error.response.data.message);
         }
-      });
+    }
+
+
+
+    // withCredentials is now set globally, cookies sent/received automatically
+    // await axios
+    //   .post(`${BASE_URL}/user/login`, userInfo)
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     // Store user data in sessionStorage (token is in HttpOnly cookie)
+    //     setUserData(res.data.user);
+        
+    //     if (res.data.user.email) {
+    //       toast.success("Login successful!");
+    //       // Redirect to admin dashboard if user is admin
+    //       if (res.data.user.role === "admin") {
+    //         navigate("/admin");
+    //       } else {
+    //         navigate("/");
+    //       }
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     if (error.response) {
+    //       console.log(error.response.data.message);
+    //       toast.error(error.response.data.message);
+    //     }
+    //   });
   };
 
   return (

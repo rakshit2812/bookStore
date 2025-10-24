@@ -5,8 +5,9 @@ import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
-import { BASE_URL } from "../lib/base-url";
 import { getUserData } from "../utils/auth";
+import { createOrder } from "../services/orderService";
+import { getCart } from "../services/cartService";
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export default function CheckoutPage() {
 
     try {
       // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/cart`);
+      const response = await getCart();
       
       if (!response.data || response.data.items.length === 0) {
         toast.error("Your cart is empty!");
@@ -94,15 +95,14 @@ export default function CheckoutPage() {
 
     setProcessing(true);
 
+    const orderData = {
+      shippingAddress,
+      paymentMethod,
+    };
+
     try {
       // Cookie sent automatically
-      const response = await axios.post(
-        `${BASE_URL}/order/create`,
-        {
-          shippingAddress,
-          paymentMethod,
-        }
-      );
+      const response = await createOrder(orderData);
 
       toast.success("Order placed successfully!");
       

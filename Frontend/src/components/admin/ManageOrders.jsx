@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../../lib/base-url";
+import { getOrderById, updateOrderStatus } from "../../services/adminService";
 
 export default function ManageOrders({ theme }) {
   const [orders, setOrders] = useState([]);
@@ -34,8 +35,8 @@ export default function ManageOrders({ theme }) {
   const viewOrderDetails = async (orderId) => {
     try {
       // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/admin/orders/${orderId}`);
-      setSelectedOrder(response.data);
+      const response = await getOrderById(orderId);
+      setSelectedOrder(response);
       setShowModal(true);
     } catch (error) {
       console.error("Error fetching order details:", error);
@@ -46,10 +47,7 @@ export default function ManageOrders({ theme }) {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       // Cookie sent automatically
-      await axios.put(
-        `${BASE_URL}/admin/orders/${orderId}/status`,
-        { orderStatus: newStatus }
-      );
+      await updateOrderStatus(orderId, newStatus);
       toast.success("Order status updated successfully");
       fetchOrders();
       if (selectedOrder?._id === orderId) {

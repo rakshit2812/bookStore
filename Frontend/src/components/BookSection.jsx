@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import BookCard from "./BookCard";
 import Slider from "react-slick";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
-import { BASE_URL } from "../lib/base-url";
+import { getBooks, getGenres } from "../services/bookService";
 
 // Custom Arrow Components
 const NextArrow = (props) => {
@@ -89,10 +88,8 @@ export default function BookSection({ title, endpoint, viewAllLink, genre, color
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/book/${endpoint}`, {
-          withCredentials: true,
-        });
-        setBooks(response.data);
+        const response = await getBooks(endpoint);
+        setBooks(response);
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {
@@ -107,10 +104,8 @@ export default function BookSection({ title, endpoint, viewAllLink, genre, color
     if (genre) {
       const fetchGenres = async () => {
         try {
-          const response = await axios.get(`${BASE_URL}/book/genres`, {
-            withCredentials: true,
-          });
-          setGenres(["all", ...response.data]);
+          const response = await getGenres();
+          setGenres(["all", ...response]);
         } catch (error) {
           console.error("Error fetching genres:", error);
         }
@@ -238,25 +233,6 @@ export default function BookSection({ title, endpoint, viewAllLink, genre, color
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Genre Filter */}
-            {genre && genres.length > 0 && (
-              <select
-                defaultValue={selectedGenre}
-                onChange={(e) => setSelectedGenre(e.target.value)}
-                // className="select select-neutral"
-                className={`select select-neutral ${
-                  theme === "dark"
-                    ? "bg-slate-800 border-slate-700 text-white"
-                    : "bg-white border-gray-300 text-gray-900"
-                }`}
-              >
-                {genres.map((g) => (
-                  <option key={g} value={g}>
-                    {g === "all" ? "All Genres" : g}
-                  </option>
-                ))}
-              </select>
-            )}
 
             {/* View All Link */}
             {viewAllLink && (

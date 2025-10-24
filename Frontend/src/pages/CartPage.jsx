@@ -7,8 +7,8 @@ import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
-import { BASE_URL } from "../lib/base-url";
 import { getUserData } from "../utils/auth";
+import { getCart, updateCartItem, removeFromCart, clearCart } from "../services/cartService";
 
 export default function CartPage() {
   const [cart, setCart] = useState(null);
@@ -32,8 +32,8 @@ export default function CartPage() {
 
     try {
       // Cookie sent automatically, no need for headers
-      const response = await axios.get(`${BASE_URL}/cart`);
-      setCart(response.data);
+      const response = await getCart();
+      setCart(response);
     } catch (error) {
       console.error("Error fetching cart:", error);
       if (error.response?.status === 401) {
@@ -50,10 +50,7 @@ export default function CartPage() {
   const handleUpdateQuantity = async (bookId, newQuantity) => {
     try {
       // Cookie sent automatically
-      const response = await axios.put(
-        `${BASE_URL}/cart/update`,
-        { bookId, quantity: newQuantity }
-      );
+      const response = await updateCartItem(bookId, newQuantity);
       setCart(response.data);
       refreshCart(); // Update cart count in navbar
       toast.success("Cart updated");
@@ -66,7 +63,7 @@ export default function CartPage() {
   const handleRemoveItem = async (bookId) => {
     try {
       // Cookie sent automatically
-      const response = await axios.delete(`${BASE_URL}/cart/remove/${bookId}`);
+      const response = await removeFromCart(bookId);
       setCart(response.data);
       refreshCart(); // Update cart count in navbar
       toast.success("Item removed from cart");
@@ -89,7 +86,7 @@ export default function CartPage() {
 
     try {
       // Cookie sent automatically
-      const response = await axios.delete(`${BASE_URL}/cart/clear`);
+      const response = await clearCart();
       setCart(response.data);
       refreshCart(); // Update cart count in navbar
       toast.success("Cart cleared");

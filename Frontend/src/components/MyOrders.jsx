@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { useTheme } from "../contexts/ThemeContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
-import { BASE_URL } from "../lib/base-url";
+import { getUserOrders, cancelOrder } from "../services/orderService";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
@@ -20,9 +19,8 @@ export default function MyOrders() {
 
   const fetchOrders = async () => {
     try {
-      // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/order`);
-      setOrders(response.data);
+      const response = await getUserOrders();
+      setOrders(response);
     } catch (error) {
       console.error("Error fetching orders:", error);
       if (error.response?.status === 401) {
@@ -52,8 +50,7 @@ export default function MyOrders() {
     if (!confirmed) return;
 
     try {
-      // Cookie sent automatically
-      await axios.put(`${BASE_URL}/order/cancel/${orderId}`, {});
+      await cancelOrder(orderId);
       toast.success("Order cancelled successfully");
       fetchOrders(); // Refresh orders
     } catch (error) {
@@ -87,7 +84,7 @@ export default function MyOrders() {
     );
   }
 
-  if (orders.length === 0) {
+  if (orders?.length === 0) {
     return (
       <div className={`rounded-xl shadow-lg p-12 text-center ${
         theme === "dark" ? "bg-slate-900" : "bg-white"
@@ -122,7 +119,7 @@ export default function MyOrders() {
       </h2>
 
       <div className="space-y-4">
-        {orders.map((order) => (
+        {orders?.map((order) => (
           <div
             key={order._id}
             className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-slate-900" : "bg-white"}`}

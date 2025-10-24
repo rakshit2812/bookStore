@@ -6,8 +6,9 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
-import { BASE_URL } from "../lib/base-url";
 import { getUserData } from "../utils/auth";
+import { addToCart } from "../services/cartService";
+import { getBookById } from "../services/bookService";
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -23,10 +24,8 @@ export default function BookDetailPage() {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/book/${id}`, {
-          withCredentials: true,
-        });
-        setBook(response.data);
+        const response = await getBookById(id);
+        setBook(response);
       } catch (error) {
         console.error("Error fetching book:", error);
         toast.error("Failed to load book details");
@@ -48,10 +47,7 @@ export default function BookDetailPage() {
 
     try {
       // Cookie sent automatically
-      await axios.post(
-        `${BASE_URL}/cart/add`,
-        { bookId: book._id, quantity }
-      );
+      await addToCart(book._id, quantity);
       refreshCart(); // Update cart count in navbar
       toast.success("Added to cart!");
     } catch (error) {
@@ -70,10 +66,7 @@ export default function BookDetailPage() {
 
     try {
       // Cookie sent automatically
-      await axios.post(
-        `${BASE_URL}/favorite/toggle`,
-        { bookId: book._id }
-      );
+      await toggleFavorite(book._id);
       setIsFavorite(!isFavorite);
       toast.success(isFavorite ? "Removed from favorites" : "Added to favorites");
     } catch (error) {

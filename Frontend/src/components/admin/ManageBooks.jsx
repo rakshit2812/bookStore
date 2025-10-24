@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { useConfirmation } from "../../contexts/ConfirmationContext";
-import { BASE_URL } from "../../lib/base-url";
+import { getBooks, getCategories, getGenres } from "../../services/bookService";
+import { addBook, updateBook, deleteBook } from "../../services/adminService";
+import SearchBar from "../common/SearchBar";
+import Filters from "../common/Filters";
 
 export default function ManageBooks({ theme }) {
   const [books, setBooks] = useState([]);
@@ -44,10 +46,8 @@ export default function ManageBooks({ theme }) {
 
   const fetchBooks = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/book`, {
-        withCredentials: true,
-      });
-      setBooks(response.data);
+      const response = await getBooks();
+      setBooks(response);
     } catch (error) {
       console.error("Error fetching books:", error);
       toast.error("Failed to load books");
@@ -58,10 +58,8 @@ export default function ManageBooks({ theme }) {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/book/categories`, {
-        withCredentials: true,
-      });
-      setCategories(response.data);
+      const response = await getCategories();
+      setCategories(response);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
@@ -69,10 +67,8 @@ export default function ManageBooks({ theme }) {
 
   const fetchGenres = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/book/genres`, {
-        withCredentials: true,
-      });
-      setGenres(response.data);
+      const response = await getGenres();
+      setGenres(response);
     } catch (error) {
       console.error("Error fetching genres:", error);
     }
@@ -132,7 +128,7 @@ export default function ManageBooks({ theme }) {
     try {
       if (modalMode === "add") {
         // Cookie sent automatically
-        await axios.post(`${BASE_URL}/admin/books`, bookData);
+        await addBook(bookData);
         toast.success("Book added successfully!");
       } else {
         const confirmed = await showConfirmation({
@@ -146,7 +142,7 @@ export default function ManageBooks({ theme }) {
         if (!confirmed) return;
 
         // Cookie sent automatically
-        await axios.put(`${BASE_URL}/admin/books/${selectedBook._id}`, bookData);
+        await updateBook(selectedBook._id, bookData);
         toast.success("Book updated successfully!");
       }
       setShowModal(false);
@@ -167,7 +163,7 @@ export default function ManageBooks({ theme }) {
 
     try {
       // Cookie sent automatically
-      await axios.delete(`${BASE_URL}/admin/books/${bookToDelete._id}`);
+      await deleteBook(bookToDelete._id);
       toast.success("Book deleted successfully!");
       setShowDeleteModal(false);
       setBookToDelete(null);
@@ -203,6 +199,16 @@ export default function ManageBooks({ theme }) {
     return matchesSearch && matchesCategory && matchesGenre && matchesRating;
   });
 
+  const handleSearchClear = () => {
+    setSearchQuery("");
+  };
+
+  const handleClearFilters = () => {
+    setCategoryFilter("all");
+    setGenreFilter("all");
+    setRatingFilter("all");
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -236,97 +242,57 @@ export default function ManageBooks({ theme }) {
 
       {/* Search and Filters */}
       <div className={`rounded-xl shadow-lg p-6 ${theme === "dark" ? "bg-slate-900" : "bg-white"}`}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="space-y-4">
           {/* Search */}
-          <div className="lg:col-span-2">
+          <div>
             <label className={`block text-sm font-medium mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
               Search Books
             </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by title or author..."
-                className={`w-full px-4 py-2 pl-10 rounded-lg border ${
-                  theme === "dark"
-                    ? "bg-slate-800 border-slate-700 text-white placeholder-gray-500"
-                    : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
-                }`}
+            <SearchBar
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={handleSearchClear}
+              placeholder="Search by title or author..."
+            />
+          </div>
+
+          {/* Filters */}
+          <div>
+            <label className={`block text-sm font-medium mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
+              Filters
+            </label>
+            <div className="flex flex-col md:flex-row gap-4">
+              <Filters
+                categories={["all", ...categories]}
+                genres={["all", ...genres]}
+                selectedCategory={categoryFilter}
+                selectedGenre={genreFilter}
+                onCategoryChange={(e) => setCategoryFilter(e.target.value)}
+                onGenreChange={(e) => setGenreFilter(e.target.value)}
+                onClear={handleClearFilters}
+                showSort={false}
               />
-              <svg className="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              
+              {/* Rating Filter */}
+              <select
+                value={ratingFilter}
+                onChange={(e) => setRatingFilter(e.target.value)}
+                className={`select select-neutral ${
+                  theme === "dark"
+                    ? "bg-slate-800 border-slate-700 text-white"
+                    : "bg-white border-gray-300 text-gray-900"
+                }`}
+              >
+                <option value="all">All Ratings</option>
+                <option value="4+">4+ Stars</option>
+                <option value="3+">3+ Stars</option>
+                <option value="below3">Below 3 Stars</option>
+              </select>
             </div>
           </div>
 
-          {/* Category Filter */}
-          <div>
-            <label className={`block text-sm font-medium mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
-              Category
-            </label>
-            <select
-              defaultValue={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className={`select select-neutral ${
-                theme === "dark"
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-white border-gray-300 text-gray-900"
-              }`}
-            >
-              <option value="all">All Categories</option>
-              {categories && categories.length > 0 && categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Genre Filter */}
-          <div>
-            <label className={`block text-sm font-medium mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
-              Genre
-            </label>
-            <select
-              defaultValue={genreFilter}
-              onChange={(e) => setGenreFilter(e.target.value)}
-              className={`select select-neutral ${
-                theme === "dark"
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-white border-gray-300 text-gray-900"
-              }`}
-            >
-              <option value="all">All Genres</option>
-              {genres.map(genre => (
-                <option key={genre} value={genre}>{genre}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-          {/* Rating Filter */}
-          <div>
-            <label className={`block text-sm font-medium mb-2 ${theme === "dark" ? "text-gray-300" : "text-gray-700"}`}>
-              Rating
-            </label>
-            <select
-              defaultValue={ratingFilter}
-              onChange={(e) => setRatingFilter(e.target.value)}
-              className={`select select-neutral ${
-                theme === "dark"
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-white border-gray-300 text-gray-900"
-              }`}
-            >
-              <option value="all">All Ratings</option>
-              <option value="4+">4+ Stars</option>
-              <option value="3+">3+ Stars</option>
-              <option value="below3">Below 3 Stars</option>
-            </select>
-          </div>
-
           {/* Results Count */}
-          <div className="lg:col-span-3 flex items-end">
+          <div>
             <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
               Showing <span className="font-bold text-orange-500">{filteredBooks.length}</span> of <span className="font-bold">{books.length}</span> books
             </p>

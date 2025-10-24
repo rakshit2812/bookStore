@@ -7,7 +7,7 @@ import { InactivityProvider } from "./contexts/InactivityContext.jsx";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 // Import axios config to set global defaults BEFORE any other imports
-import "./lib/axios.js";
+import "./utils/axios.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>

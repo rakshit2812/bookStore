@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import BookCard from "./BookCard";
 import { useTheme } from "../contexts/ThemeContext";
-import { BASE_URL } from "../lib/base-url";
+import { getUserFavorites } from "../services/favoriteService";
 
 export default function FavoritesSection() {
   const [favorites, setFavorites] = useState([]);
@@ -17,8 +16,8 @@ export default function FavoritesSection() {
   const fetchFavorites = async () => {
     try {
       // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/favorite`);
-      setFavorites(response.data.books || []);
+      const response = await getUserFavorites();
+      setFavorites(response.books || []);
     } catch (error) {
       console.error("Error fetching favorites:", error);
       if (error.response?.status === 401) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
-import { BASE_URL } from "../../lib/base-url";
+import { getAnalytics } from "../../services/adminService";
+
 
 export default function DashboardOverview({ theme }) {
   const [analytics, setAnalytics] = useState(null);
@@ -14,8 +14,8 @@ export default function DashboardOverview({ theme }) {
   const fetchAnalytics = async () => {
     try {
       // Cookie sent automatically
-      const response = await axios.get(`${BASE_URL}/admin/analytics`);
-      setAnalytics(response.data);
+      const response = await getAnalytics();
+      setAnalytics(response);
     } catch (error) {
       console.error("Error fetching analytics:", error);
       toast.error("Failed to load analytics");

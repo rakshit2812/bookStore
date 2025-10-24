@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../lib/base-url";
+import { handleSignup } from "../services/userService";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -19,20 +20,35 @@ export default function Signup() {
       email: data.email,
       password: data.password,
     };
-    await axios
-      .post(`${BASE_URL}/user/signup`, userInfo)
-      .then((res) => {
-        console.log(res.data);
-        // No need to store user data on signup, they need to login
-        toast.success("Signup successful! Please login to your account");
-        navigate("/login");
-      })
-      .catch((error) => {
-        if (error.response) {
+
+    try{
+      const response = await handleSignup(userInfo);
+      // No need to store user data on signup, they need to login
+      toast.success("Signup successful! Please login to your account");
+      navigate("/login");
+    }
+    catch(error){
+      if (error.response) {
           console.log(error.response.data.message);
           toast.error(error.response.data.message);
         }
-      });
+    }
+
+
+    // await axios
+    //   .post(`${BASE_URL}/user/signup`, userInfo)
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     // No need to store user data on signup, they need to login
+    //     toast.success("Signup successful! Please login to your account");
+    //     navigate("/login");
+    //   })
+    //   .catch((error) => {
+    //     if (error.response) {
+    //       console.log(error.response.data.message);
+    //       toast.error(error.response.data.message);
+    //     }
+    //   });
   };
 
   const theme = localStorage.getItem("theme");

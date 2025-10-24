@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import BookCard from "./BookCard";
 import { useTheme } from "../contexts/ThemeContext";
-import { BASE_URL } from "../lib/base-url";
+import { getBooks } from "../services/bookService";
 
 export default function GridBookSection({ title, endpoint, viewAllLink, colorScheme = "teal" }) {
   const [books, setBooks] = useState([]);
@@ -13,11 +12,9 @@ export default function GridBookSection({ title, endpoint, viewAllLink, colorSch
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/book/${endpoint}`, {
-          withCredentials: true,
-        });
+        const response = await getBooks(endpoint);
         // Limit to 6 books
-        setBooks(response.data.slice(0, 6));
+        setBooks(response.slice(0, 6));
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {
