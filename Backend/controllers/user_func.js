@@ -159,7 +159,8 @@ export const handleGoogleCallback = async(req, res) => {
     try {
         const user = req.user;
         if (!user) {
-            return res.redirect(`${process.env.FRONTEND_URL}/login?error=authentication_failed`);
+            const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+            return res.redirect(`${frontendUrl}/login?error=authentication_failed`);
         }
 
         // Generate JWT token
@@ -176,15 +177,43 @@ export const handleGoogleCallback = async(req, res) => {
         });
 
         // Redirect to frontend with success
+        // Use FRONTEND_URL from env, fallback to localhost for development
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        
         if (user.role === "admin") {
-            res.redirect(`${process.env.FRONTEND_URL}/admin`);
+            res.redirect(`${frontendUrl}/admin`);
         } else {
-            res.redirect(`${process.env.FRONTEND_URL}/`);
+            res.redirect(`${frontendUrl}/`);
         }
     } catch (error) {
         console.log("Google callback error", error);
-        res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        res.redirect(`${frontendUrl}/login?error=server_error`);
     }
 }
+
+// Get current user from auth token
+export const handleGetCurrentUser = async(req, res) => {
+    try {
+        // req.user is populated by requireAuth middleware
+        const user = req.user;
+        
+        if (!user) {
+            return res.status(401).json({ message: "Not authenticated" });
+        }
+
+        // Return user data (without sensitive information)
+        return res.status(200).json({
+            fullname: user.fullname,
+            email: user.email,
+            id: user._id,
+            role: user.role,
+            avatar: user.avatar || ""
+        });
+    } catch (error) {
+        console.log("Get current user error", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
 
 export { passport };

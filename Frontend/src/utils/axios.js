@@ -20,6 +20,11 @@ axiosInstance.interceptors.response.use(
   (error) => {
     // If we get 401 Unauthorized, the token might have expired
     if (error.response?.status === 401) {
+      // Don't redirect if it's the /user/me endpoint (used for auth checking)
+      if (error.config?.url?.includes('/user/me')) {
+        return Promise.reject(error);
+      }
+      
       // Clear user data and redirect to login
       sessionStorage.removeItem('user');
       localStorage.removeItem('user');
@@ -40,6 +45,12 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // Don't redirect if it's the /user/me endpoint (used for auth checking)
+      // Let the calling code handle the error
+      if (error.config?.url?.includes('/user/me')) {
+        return Promise.reject(error);
+      }
+      
       sessionStorage.removeItem('user');
       localStorage.removeItem('user');
       localStorage.removeItem('token');
