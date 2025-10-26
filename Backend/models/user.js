@@ -29,7 +29,15 @@ const userSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function() {
+        // Password is required only if googleId is not present
+        return !this.googleId;
+      }
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true // allows multiple null values
     },
     role: {
       type: String,

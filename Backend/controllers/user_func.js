@@ -1,6 +1,75 @@
 import User from "../models/user.js"
 import bcryptjs from "bcryptjs";
 import { setUser } from "../service/Auth.js";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+// Configure Passport Google Strategy
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/google/callback",
+      proxy: true
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Check if user already exists in our db
+        let user = await User.findOne({ googleId: profile.id });
+
+        if (user) {
+          // User exists, return the user
+          return done(null, user);
+        }
+
+        // Check if a user with this email already exists
+        let existingEmailUser = await User.findOne({ 
+          email: profile.emails[0].value 
+        });
+
+        if (existingEmailUser) {
+          // Link Google account to existing user
+          existingEmailUser.googleId = profile.id;
+          if (!existingEmailUser.avatar && profile.photos?.[0]?.value) {
+            existingEmailUser.avatar = profile.photos[0].value;
+          }
+          await existingEmailUser.save();
+          return done(null, existingEmailUser);
+        }
+
+        // Create new user
+        const newUser = await User.create({
+          googleId: profile.id,
+          fullname: profile.displayName,
+          email: profile.emails[0].value,
+          avatar: profile.photos?.[0]?.value || ""
+        });
+
+        done(null, newUser);
+      } catch (error) {
+        console.error("Error in Google Strategy:", error);
+        done(error, null);
+      }
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
 // import mongoose from "mongoose";
 
 export const handleSignup = async(req,res) => {
@@ -84,3 +153,38 @@ export const handleLogout = async(req, res) => {
         return res.status(500).json({message: "Internal server error"});
     }
 }
+
+// Google OAuth Callback Handler
+export const handleGoogleCallback = async(req, res) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            return res.redirect(`${process.env.FRONTEND_URL}/login?error=authentication_failed`);
+        }
+
+        // Generate JWT token
+        const token = setUser(user);
+        
+        // Set token in HttpOnly cookie
+        const isProd = process.env.NODE_ENV === 'production';
+        res.cookie("authToken", token, {
+            httpOnly: true,
+            secure: isProd,
+            sameSite: isProd ? 'None' : 'Lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            path: "/",
+        });
+
+        // Redirect to frontend with success
+        if (user.role === "admin") {
+            res.redirect(`${process.env.FRONTEND_URL}/admin`);
+        } else {
+            res.redirect(`${process.env.FRONTEND_URL}/`);
+        }
+    } catch (error) {
+        console.log("Google callback error", error);
+        res.redirect(`${process.env.FRONTEND_URL}/login?error=server_error`);
+    }
+}
+
+export { passport };

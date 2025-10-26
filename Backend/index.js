@@ -5,6 +5,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { passport, handleGoogleCallback } from "./controllers/user_func.js";
 
 import bookRoute from "./routes/book_route.js";
 import userRoute from "./routes/user_route.js";
@@ -34,6 +35,9 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Initialize Passport
+app.use(passport.initialize());
+
 // Routes
 app.use("/book", bookRoute);
 app.use("/user", userRoute);
@@ -41,5 +45,22 @@ app.use("/cart", cartRoute);
 app.use("/order", orderRoute);
 app.use("/favorite", favoriteRoute);
 app.use("/admin", adminRoute);
+
+// Google OAuth Routes (at root level to match Google Cloud Console configuration)
+app.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"]
+  })
+);
+
+app.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: false
+  }),
+  handleGoogleCallback
+);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
