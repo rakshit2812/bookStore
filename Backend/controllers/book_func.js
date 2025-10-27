@@ -21,7 +21,7 @@ export const getBooksFiltered = async (req, res) => {
             maxPrice,
             sortBy,
             page = 1,
-            limit = 12
+            limit = 10
         } = req.query;
 
         let query = {};
@@ -52,26 +52,26 @@ export const getBooksFiltered = async (req, res) => {
             if (maxPrice) query.price.$lte = Number(maxPrice);
         }
 
-        // Sorting
+        // Sorting with _id as tiebreaker for consistent pagination
         let sortOptions = {};
         switch (sortBy) {
             case 'price_asc':
-                sortOptions.price = 1;
+                sortOptions = { price: 1, _id: 1 };
                 break;
             case 'price_desc':
-                sortOptions.price = -1;
+                sortOptions = { price: -1, _id: 1 };
                 break;
             case 'rating':
-                sortOptions.rating = -1;
+                sortOptions = { rating: -1, _id: 1 };
                 break;
             case 'newest':
-                sortOptions.createdAt = -1;
+                sortOptions = { createdAt: -1, _id: 1 };
                 break;
             default:
-                sortOptions.createdAt = -1;
+                sortOptions = { createdAt: -1, _id: 1 };
         }
 
-        const skip = (page - 1) * limit;
+        const skip = (Number(page) - 1) * Number(limit);
 
         const books = await Book.find(query)
             .sort(sortOptions)
@@ -79,15 +79,20 @@ export const getBooksFiltered = async (req, res) => {
             .limit(Number(limit));
 
         const total = await Book.countDocuments(query);
+        const totalPages = Math.ceil(total / Number(limit));
+
+        // Debug logging
+        console.log(`Pagination Debug: page=${page}, limit=${limit}, skip=${skip}, total=${total}, totalPages=${totalPages}, returned=${books.length}`);
 
         res.status(200).json({
             books,
             currentPage: Number(page),
-            totalPages: Math.ceil(total / limit),
-            totalBooks: total
+            totalPages,
+            totalBooks: total,
+            limit: Number(limit)
         });
     } catch (error) {
-        console.log("Error in getBooksFiltered:", error);
+        console.error("Error in getBooksFiltered:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };

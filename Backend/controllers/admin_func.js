@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import Book from "../models/book.js";
 import Order from "../models/order.js";
+import bcryptjs from "bcryptjs";
 
 // Get analytics data
 export const getAnalytics = async (req, res) => {
@@ -442,12 +443,18 @@ export const changeAdminPassword = async (req, res) => {
         const adminId = req.user._id;
         const { currentPassword, newPassword } = req.body;
 
+        // Validation
         if (!currentPassword || !newPassword) {
             return res.status(400).json({ message: "Please provide both current and new password" });
         }
 
         if (newPassword.length < 6) {
             return res.status(400).json({ message: "New password must be at least 6 characters" });
+        }
+
+        // Check if new password is same as current
+        if (currentPassword === newPassword) {
+            return res.status(400).json({ message: "New password must be different from current password" });
         }
 
         const admin = await User.findById(adminId);
@@ -468,8 +475,11 @@ export const changeAdminPassword = async (req, res) => {
 
         res.status(200).json({ message: "Password changed successfully" });
     } catch (error) {
-        console.log("Error in changeAdminPassword:", error);
-        res.status(500).json({ message: "Internal server error" });
+        console.error("Error in changeAdminPassword:", error);
+        res.status(500).json({ 
+            message: "Internal server error", 
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined 
+        });
     }
 };
 

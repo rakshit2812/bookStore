@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BookCard from "./BookCard";
+import BookCardSkeleton from "./skeletons/BookCardSkeleton";
 import { useTheme } from "../contexts/ThemeContext";
 import { getBooks } from "../services/bookService";
 
@@ -51,8 +52,24 @@ export default function GridBookSection({ title, endpoint, viewAllLink, colorSch
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+      <div className="py-16">
+        <div className="max-w-screen-2xl container mx-auto px-4 md:px-20">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+            <div>
+              <div className={`h-10 w-64 rounded ${
+                theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+              } animate-pulse`}></div>
+              <div className={`h-1 w-20 mt-2 rounded-full ${
+                theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+              } animate-pulse`}></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, index) => (
+              <BookCardSkeleton key={index} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

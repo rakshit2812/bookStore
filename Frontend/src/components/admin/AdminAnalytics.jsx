@@ -16,6 +16,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { getAnalytics } from "../../services/adminService";
+import DashboardCardSkeleton from "../skeletons/DashboardCardSkeleton";
 
 export default function AdminAnalytics({ theme }) {
   const [analytics, setAnalytics] = useState(null);
@@ -43,8 +44,34 @@ export default function AdminAnalytics({ theme }) {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
+      <div className="space-y-8">
+        <div>
+          <div className={`h-10 w-64 rounded mb-2 ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+          <div className={`h-6 w-96 rounded ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, index) => (
+            <DashboardCardSkeleton key={index} />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[...Array(2)].map((_, index) => (
+            <div key={index} className={`rounded-xl shadow-lg p-6 ${
+              theme === "dark" ? "bg-slate-900" : "bg-white"
+            } animate-pulse`}>
+              <div className={`h-8 rounded mb-4 ${
+                theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+              } w-48`}></div>
+              <div className={`h-64 rounded ${
+                theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+              }`}></div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

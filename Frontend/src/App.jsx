@@ -1,16 +1,5 @@
-import { useEffect, useState } from 'react'
-import HomePage from './pages/HomePage'
-// import Course from './components/course/Course'
-import BooksPage from './pages/BooksPage'
-import BookDetailPage from './pages/BookDetailPage'
-import CartPage from './pages/CartPage'
-import CheckoutPage from './pages/CheckoutPage'
-import UserDashboard from './pages/UserDashboard'
-import AdminDashboard from './pages/AdminDashboard'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import {Routes , Route, Navigate} from "react-router-dom"
-import Signup from './components/Signup'
-import LoginPage from './components/LoginPage'
-import Contact from './components/Contact'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { CartProvider } from './contexts/CartContext'
@@ -20,6 +9,19 @@ import { ProtectedRoute, AdminRedirect, AuthRoute } from './components/RouteProt
 import { setUserData, getUserData } from './utils/auth'
 import { BASE_URL } from './lib/base-url'
 import axios from 'axios'
+import LoadingFallback from './components/LoadingFallback'
+
+// Lazy load all page components
+const HomePage = lazy(() => import('./pages/HomePage'))
+const BooksPage = lazy(() => import('./pages/BooksPage'))
+const BookDetailPage = lazy(() => import('./pages/BookDetailPage'))
+const CartPage = lazy(() => import('./pages/CartPage'))
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'))
+const UserDashboard = lazy(() => import('./pages/UserDashboard'))
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
+const Signup = lazy(() => import('./components/Signup'))
+const LoginPage = lazy(() => import('./components/LoginPage'))
+const Contact = lazy(() => import('./components/Contact'))
 
 export default function App() {
   const [authChecked, setAuthChecked] = useState(false);
@@ -67,6 +69,7 @@ export default function App() {
       <ConfirmationProvider>
         <CartProvider>
           <div className="dark:bg-slate-950 dark:text-white">
+            <Suspense fallback={<LoadingFallback />}>
             <Routes>
             {/* Auth Routes - Redirects authenticated users to their dashboard */}
             <Route 
@@ -155,6 +158,7 @@ export default function App() {
               }
             />
             </Routes>
+            </Suspense>
             <Toaster />
             <ConfirmationModal />
           </div>

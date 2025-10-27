@@ -163,7 +163,7 @@ export default function AdminDashboard() {
             } ${isCollapsed ? "hidden" : ""}`}>
               <div className="flex flex-col items-center gap-3 text-center">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-r from-orange-500 to-red-600 flex items-center justify-center text-white text-2xl font-bold">
-                  <img src={user?.avatar} alt="Profile" className="w-full h-full rounded-full" />
+                  <img src={user?.avatar} alt="Profile" loading="lazy" className="w-full h-full rounded-full" />
                 </div>
                 <p className={`mt-2 font-bold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
                   {user?.fullname || "Admin"}
@@ -182,7 +182,7 @@ export default function AdminDashboard() {
               theme === "dark" ? "border-slate-800" : "border-gray-200"
             } ${isCollapsed ? "flex" : "hidden"} justify-center`}>
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-500 to-red-600 flex items-center justify-center text-white text-sm font-bold" title={user?.fullname || "Admin"}>
-                <img src={user?.avatar} alt="Profile" className="w-full h-full rounded-full" />
+                <img src={user?.avatar} alt="Profile" loading="lazy" className="w-full h-full rounded-full" />
               </div>
             </div>
 
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
         isCollapsed ? "lg:ml-20" : "lg:ml-[280px]"
       }`}>
         <div className="max-w-screen-2xl mx-auto px-4 md:px-20 py-12">
-          <div className="mt-12">
+          <div className="mt-12 py-8">
             <Routes>
               <Route path="/dashboard" element={<DashboardOverview theme={theme} />} />
               <Route path="/analytics" element={<AdminAnalytics theme={theme} />} />

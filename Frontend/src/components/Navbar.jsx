@@ -13,6 +13,7 @@ export default function Navbar() {
 
   const [sticky, setSticky] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Check authentication status on mount and location changes
   useEffect(() => {
@@ -149,23 +150,84 @@ export default function Navbar() {
             )}
 
             {/* Mobile Menu Button */}
-            <button className="lg:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
-              <svg
-                className="w-6 h-6 text-[#334155] dark:text-gray-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <svg
+                  className="w-6 h-6 text-[#334155] dark:text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-6 h-6 text-[#334155] dark:text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              )}
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden border-t border-gray-200 dark:border-slate-800">
+            <nav className="px-4 py-4 space-y-2">
+              <Link
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block px-4 py-3 rounded-lg font-medium transition-all ${
+                  isActive("/")
+                    ? "bg-[#E91E8C] text-white"
+                    : "text-[#334155] dark:text-gray-300 hover:bg-[#F0FDFA] dark:hover:bg-slate-800"
+                }`}
+              >
+                Home
+              </Link>
+              <Link
+                to="/books"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block px-4 py-3 rounded-lg font-medium transition-all ${
+                  isActive("/books")
+                    ? "bg-[#E91E8C] text-white"
+                    : "text-[#334155] dark:text-gray-300 hover:bg-[#F0FDFA] dark:hover:bg-slate-800"
+                }`}
+              >
+                Books
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`block px-4 py-3 rounded-lg font-medium transition-all ${
+                  isActive("/contact")
+                    ? "bg-[#E91E8C] text-white"
+                    : "text-[#334155] dark:text-gray-300 hover:bg-[#F0FDFA] dark:hover:bg-slate-800"
+                }`}
+              >
+                Contact
+              </Link>
+            </nav>
+          </div>
+        )}
       </div>
     </div>
   );

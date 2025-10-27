@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useConfirmation } from "../../contexts/ConfirmationContext";
 import { getUsers, getUserById, deleteUser } from "../../services/adminService";
+import TableRowSkeleton from "../skeletons/TableRowSkeleton";
 
 export default function ManageUsers({ theme }) {
   const [users, setUsers] = useState([]);
@@ -68,8 +69,39 @@ export default function ManageUsers({ theme }) {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
+      <div className="space-y-6">
+        <div>
+          <div className={`h-10 w-48 rounded mb-2 ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+          <div className={`h-6 w-64 rounded ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+        </div>
+        <div className={`rounded-xl shadow-lg overflow-hidden ${
+          theme === "dark" ? "bg-slate-900" : "bg-white"
+        }`}>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className={theme === "dark" ? "bg-slate-800" : "bg-gray-50"}>
+                <tr>
+                  {['User', 'Email', 'Role', 'Orders', 'Joined', 'Actions'].map((header, idx) => (
+                    <th key={idx} className={`px-6 py-4 text-left text-sm font-semibold ${
+                      theme === "dark" ? "text-gray-300" : "text-gray-700"
+                    }`}>
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {[...Array(5)].map((_, index) => (
+                  <TableRowSkeleton key={index} columns={6} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     );
   }

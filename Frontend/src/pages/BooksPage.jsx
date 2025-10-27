@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import BookCard from "../components/BookCard";
+import BookCardSkeleton from "../components/skeletons/BookCardSkeleton";
 import SearchBar from "../components/common/SearchBar";
 import Filters from "../components/common/Filters";
 import { useTheme } from "../contexts/ThemeContext";
@@ -21,7 +22,7 @@ export default function BooksPage() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchParams.get("search") || "");
   const [genres, setGenres] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
   const [totalPages, setTotalPages] = useState(1);
   const { theme } = useTheme();
 
@@ -58,6 +59,18 @@ export default function BooksPage() {
     fetchCategories();
   }, []);
 
+  // Update URL params whenever filters or page change
+  useEffect(() => {
+    const params = {};
+    if (debouncedSearch) params.search = debouncedSearch;
+    if (selectedGenre !== "all") params.genre = selectedGenre;
+    if (selectedCategory !== "all") params.category = selectedCategory;
+    if (sortBy !== "newest") params.sort = sortBy;
+    if (currentPage > 1) params.page = currentPage.toString();
+    
+    setSearchParams(params, { replace: true });
+  }, [debouncedSearch, selectedGenre, selectedCategory, sortBy, currentPage, setSearchParams]);
+
   // Fetch books
   useEffect(() => {
     const fetchBooks = async () => {
@@ -69,11 +82,13 @@ export default function BooksPage() {
         if (selectedCategory !== "all") params.append("category", selectedCategory);
         if (sortBy) params.append("sortBy", sortBy);
         params.append("page", currentPage);
+        params.append("limit", "10"); // Explicitly set 10 books per page
 
         const response = await filterBooks(params);
 
         setBooks(response.books || []);
         setTotalPages(response.totalPages || 1);
+        
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {
@@ -133,14 +148,14 @@ export default function BooksPage() {
             : undefined
         }}
       >
-        <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-12 md:py-16">
+        <div className="max-w-screen-2xl container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-8 sm:py-10 md:py-12 lg:py-16">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
             {/* Left Content */}
-            <div className="w-full lg:w-1/2 space-y-8 mt-16 lg:mt-24">
+            <div className="w-full lg:w-1/2 space-y-6 sm:space-y-8 mt-8 sm:mt-12 lg:mt-24">
 
               {/* Main Heading */}
               <h1 
-                className={`text-4xl md:text-6xl font-extrabold leading-tight ${
+                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight ${
                   theme === "dark" ? "text-white" : "text-[#0F172A]"
                 }`}
                 style={{
@@ -162,7 +177,7 @@ export default function BooksPage() {
               
               {/* Description */}
               <p 
-                className={`text-lg md:text-xl ${
+                className={`text-base sm:text-lg md:text-xl ${
                   theme === "dark" ? "text-gray-300" : "text-[#475569]"
                 }`}
                 style={{ lineHeight: "1.8" }}
@@ -171,7 +186,7 @@ export default function BooksPage() {
               </p>
 
               {/* Stats Row */}
-              <div className={`flex items-center justify-between p-6 rounded-2xl ${
+              <div className={`flex items-center justify-around sm:justify-between p-4 sm:p-6 rounded-2xl ${
                 theme === "dark" ? "bg-slate-800/50" : "bg-white"
               } backdrop-blur-sm border ${
                 theme === "dark" ? "border-slate-700" : "border-[#E2E8F0]"
@@ -192,7 +207,7 @@ export default function BooksPage() {
                     <span className="text-[#14B8A6] text-2xl font-bold">+</span>
                   </div>
                   <div 
-                    className={`text-sm mt-1 ${
+                    className={`text-xs sm:text-sm mt-1 ${
                       theme === "dark" ? "text-gray-400" : "text-[#64748B]"
                     }`}
                     style={{ fontWeight: "500", letterSpacing: "0.5px" }}
@@ -266,12 +281,13 @@ export default function BooksPage() {
             </div>
 
             {/* Right - Book Image */}
-            <div className="w-full lg:w-1/2 relative">
+            <div className="w-full lg:w-1/2 relative mt-8 lg:mt-0">
               <div className="relative z-10">
                 <img
                   src="/book-banner.png"
                   alt="Book Collection"
-                  className="w-full max-w-lg mx-auto drop-shadow-2xl transform hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                  className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto drop-shadow-2xl transform hover:scale-105 transition-transform duration-300"
                 />
               </div>
               
@@ -303,38 +319,57 @@ export default function BooksPage() {
         </div>
       </div>
 
-      <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-8">
-        {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
-          {/* Search Bar */}
-          <SearchBar
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onClear={handleSearchClear}
-            placeholder="Search for books, authors, or titles..."
-          />
+      <div className="max-w-screen-2xl container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-6 sm:py-8">
+        {/* Search and Filters - Single Row */}
+        <div className="mb-8">
+          <div className="flex flex-col gap-4 items-stretch">
+            {/* Filters */}
+            <div className="w-full overflow-x-auto">
+              <Filters
+                categories={categories}
+                genres={genres}
+                selectedCategory={selectedCategory}
+                selectedGenre={selectedGenre}
+                sortBy={sortBy}
+                onCategoryChange={handleCategoryChange}
+                onGenreChange={handleGenreChange}
+                onSortChange={handleSortChange}
+                onClear={handleClearFilters}
+                showSort={true}
+                showResultsCount={false}
+                resultsCount={books.length}
+                totalCount={books.length}
+              />
+            </div>
 
-          {/* Filters Row */}
-          <Filters
-            categories={categories}
-            genres={genres}
-            selectedCategory={selectedCategory}
-            selectedGenre={selectedGenre}
-            sortBy={sortBy}
-            onCategoryChange={handleCategoryChange}
-            onGenreChange={handleGenreChange}
-            onSortChange={handleSortChange}
-            onClear={handleClearFilters}
-            showSort={true}
-            showResultsCount={true}
-            resultsCount={books.length}
-          />
+            {/* Search Bar */}
+            <div className="w-full">
+              <SearchBar
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onClear={handleSearchClear}
+                placeholder="Search books, authors..."
+              />
+            </div>
+          </div>
+
+          {/* Results Count Below */}
+          {books.length > 0 && (
+            <div className={`mt-4 px-3 sm:px-4 py-2 rounded-lg inline-block text-sm sm:text-base ${
+              theme === "dark" ? "bg-slate-800 text-white" : "bg-white text-gray-900 border border-gray-200"
+            }`}>
+              <span className="font-semibold">{books.length}</span>
+              <span className="ml-2 text-gray-500">books found</span>
+            </div>
+          )}
         </div>
 
         {/* Loading State */}
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-pink-500"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            {[...Array(8)].map((_, index) => (
+              <BookCardSkeleton key={index} />
+            ))}
           </div>
         ) : books.length === 0 ? (
           /* No Results */

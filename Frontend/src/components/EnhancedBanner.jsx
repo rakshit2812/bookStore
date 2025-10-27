@@ -33,13 +33,13 @@ export default function EnhancedBanner() {
       }}
     >
       {/* Hero Section */}
-      <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-16 md:py-24">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+      <div className="max-w-screen-2xl container mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-8 sm:py-12 md:py-16 lg:py-24">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10 lg:gap-12">
           {/* Left Content */}
-          <div className="w-full lg:w-1/2 space-y-8">
+          <div className="w-full lg:w-1/2 space-y-4 sm:space-y-6 md:space-y-8">
             {/* Main Heading */}
             <h1 
-              className={`text-5xl md:text-6xl font-extrabold leading-tight ${
+              className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight ${
                 theme === "dark" ? "text-white" : "text-[#0F172A]"
               }`}
               style={{
@@ -61,7 +61,7 @@ export default function EnhancedBanner() {
             
             {/* Description */}
             <p 
-              className={`text-xl ${
+              className={`text-sm sm:text-base md:text-lg lg:text-xl ${
                 theme === "dark" ? "text-gray-300" : "text-[#475569]"
               }`}
               style={{ lineHeight: "1.6" }}
@@ -77,8 +77,8 @@ export default function EnhancedBanner() {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search for books, authors, or genres..."
-                    className="w-full px-6 py-4 pr-12 outline-none bg-white text-[#1E293B] placeholder-[#94A3B8] border-2 border-[#E2E8F0] rounded-l-full focus:border-[#6B46C1] focus:shadow-[0_0_0_4px_rgba(107,70,193,0.1)] transition-all"
+                    placeholder="Search books..."
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 pr-10 sm:pr-12 text-sm sm:text-base outline-none bg-white text-[#1E293B] placeholder-[#94A3B8] border-2 border-[#E2E8F0] rounded-l-full focus:border-[#6B46C1] focus:shadow-[0_0_0_4px_rgba(107,70,193,0.1)] transition-all"
                   />
                   {/* Clear Button */}
                   {searchQuery && (
@@ -94,7 +94,7 @@ export default function EnhancedBanner() {
                 </div>
                 <button
                   type="submit"
-                  className="px-8 py-4 text-white font-semibold rounded-r-full transition-all shadow-[0_4px_12px_rgba(233,30,140,0.3)] hover:shadow-[0_6px_20px_rgba(233,30,140,0.4)]"
+                  className="px-4 sm:px-6 md:px-8 py-3 sm:py-4 text-sm sm:text-base text-white font-semibold rounded-r-full transition-all shadow-[0_4px_12px_rgba(233,30,140,0.3)] hover:shadow-[0_6px_20px_rgba(233,30,140,0.4)]"
                   style={{
                     background: "linear-gradient(135deg, #E91E8C 0%, #FF6B9D 100%)",
                     fontWeight: "600"
@@ -111,27 +111,26 @@ export default function EnhancedBanner() {
               </div>
             </form>
 
-            {/* Statistics Section */}
-            <div className="flex items-center justify-between pt-8 bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-lg">
+            {/* Statistics Section - Hidden on mobile, compact on tablet */}
+            <div className="hidden sm:flex items-center justify-around sm:justify-between pt-4 sm:pt-6 md:pt-8 bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 shadow-lg">
               {/* Stat 1 */}
               <div className="text-center">
                 <div className="flex items-center justify-center">
                   <span 
-                    className="text-5xl md:text-6xl font-extrabold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
                     style={{
                       background: "linear-gradient(135deg, #E91E8C, #6B46C1)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
-                      fontSize: "3.5rem",
                       fontWeight: "800"
                     }}
                   >
                     10K
                   </span>
-                  <span className="text-[#14B8A6] text-3xl font-bold ml-1">+</span>
+                  <span className="text-[#14B8A6] text-xl sm:text-2xl md:text-3xl font-bold ml-1">+</span>
                 </div>
                 <div 
-                  className={`text-sm mt-2 ${
+                  className={`text-xs sm:text-sm mt-1 sm:mt-2 ${
                     theme === "dark" ? "text-gray-400" : "text-[#64748B]"
                   }`}
                   style={{ 
@@ -153,21 +152,20 @@ export default function EnhancedBanner() {
               <div className="text-center">
                 <div className="flex items-center justify-center">
                   <span 
-                    className="text-5xl md:text-6xl font-extrabold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
                     style={{
                       background: "linear-gradient(135deg, #E91E8C, #6B46C1)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
-                      fontSize: "3.5rem",
                       fontWeight: "800"
                     }}
                   >
                     50K
                   </span>
-                  <span className="text-[#14B8A6] text-3xl font-bold ml-1">+</span>
+                  <span className="text-[#14B8A6] text-xl sm:text-2xl md:text-3xl font-bold ml-1">+</span>
                 </div>
                 <div 
-                  className={`text-sm mt-2 ${
+                  className={`text-xs sm:text-sm mt-1 sm:mt-2 ${
                     theme === "dark" ? "text-gray-400" : "text-[#64748B]"
                   }`}
                   style={{ 
@@ -189,21 +187,20 @@ export default function EnhancedBanner() {
               <div className="text-center">
                 <div className="flex items-center justify-center">
                   <span 
-                    className="text-5xl md:text-6xl font-extrabold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-br from-[#E91E8C] to-[#6B46C1] bg-clip-text text-transparent"
                     style={{
                       background: "linear-gradient(135deg, #E91E8C, #6B46C1)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
-                      fontSize: "3.5rem",
                       fontWeight: "800"
                     }}
                   >
                     25
                   </span>
-                  <span className="text-[#14B8A6] text-3xl font-bold ml-1">+</span>
+                  <span className="text-[#14B8A6] text-xl sm:text-2xl md:text-3xl font-bold ml-1">+</span>
                 </div>
                 <div 
-                  className={`text-sm mt-2 ${
+                  className={`text-xs sm:text-sm mt-1 sm:mt-2 ${
                     theme === "dark" ? "text-gray-400" : "text-[#64748B]"
                   }`}
                   style={{ 
@@ -218,15 +215,16 @@ export default function EnhancedBanner() {
           </div>
 
           {/* Right - Book Illustration Section */}
-          <div className="w-full lg:w-1/2 relative">
+          <div className="w-full lg:w-1/2 relative mt-6 lg:mt-0">
             <div 
-              className="relative z-10 p-8 rounded-3xl"
+              className="relative z-10 p-0 sm:p-4 md:p-6 lg:p-8 rounded-xl sm:rounded-2xl lg:rounded-3xl"
               
             >
               <img
                 src="/banner.png"
                 alt="Books Collection"
-                className="w-full rounded-2xl transform hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                className="w-full rounded-lg sm:rounded-xl lg:rounded-2xl transform hover:scale-105 transition-transform duration-300"
               />
               
               {/* Decorative Elements */}

@@ -24,7 +24,7 @@ export default function SearchBar({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className={`w-full px-6 py-4 pr-24 rounded-lg border-2 focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all ${
+        className={`w-full px-5 py-3 pr-24 rounded-lg border-2 focus:outline-none focus:ring-0 ${
           theme === "dark"
             ? "bg-slate-800 border-slate-700 text-white placeholder-gray-500"
             : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"

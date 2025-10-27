@@ -175,7 +175,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
       {/* Discount Badge */}
       {book.originalPrice && book.originalPrice > book.price && (
         <div 
-          className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full text-white text-xs font-semibold"
+          className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-white text-[10px] sm:text-xs font-semibold"
           style={{
             background: "linear-gradient(135deg, #F59E0B, #FBBF24)",
             fontWeight: "600"
@@ -188,14 +188,14 @@ export default function BookCard({ book, onFavoriteToggle }) {
       {/* Wishlist Heart Icon */}
       <button
         onClick={handleToggleFavorite}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all ${
+        className={`absolute top-2 right-2 sm:top-3 sm:right-3 z-10 p-1.5 sm:p-2 rounded-full transition-all ${
           isFavorite 
             ? "bg-[#FFE4E9] text-[#E91E8C]" 
             : "bg-white bg-opacity-90 text-[#64748B] hover:text-[#E91E8C]"
         }`}
       >
         <Heart 
-          className={`w-5 h-5 transition-transform hover:scale-110 ${
+          className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform hover:scale-110 ${
             isFavorite ? "fill-current" : ""
           }`}
         />
@@ -210,6 +210,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
           <img
             src={book.image || "/book1.png"}
             alt={book.name}
+            loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {/* Overlay on Hover */}
@@ -221,12 +222,12 @@ export default function BookCard({ book, onFavoriteToggle }) {
       </Link>
 
       {/* Book Details */}
-      <div className="p-4">
+      <div className="p-3 sm:p-4">
         {/* Category Tag */}
         {book.category && (
-          <div className="mb-2">
+          <div className="mb-1.5 sm:mb-2">
             <span
-              className="text-xs px-2 py-1 rounded-full border"
+              className="text-[10px] sm:text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full border"
               style={{
                 backgroundColor: categoryStyle.bg,
                 color: categoryStyle.text,
@@ -241,7 +242,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
         {/* Book Title */}
         <Link to={`/book/${book._id}`}>
           <h3
-            className={`font-semibold text-lg mb-1 line-clamp-2 transition-colors ${
+            className={`font-semibold text-sm sm:text-base md:text-lg mb-1 line-clamp-2 transition-colors ${
               theme === "dark" ? "text-white hover:text-[#6B46C1]" : "text-[#0F172A] hover:text-[#6B46C1]"
             }`}
             style={{ fontWeight: "600" }}
@@ -252,22 +253,21 @@ export default function BookCard({ book, onFavoriteToggle }) {
 
         {/* Author Name */}
         <p
-          className={`mb-2 ${
+          className={`text-xs sm:text-sm mb-1.5 sm:mb-2 ${
             theme === "dark" ? "text-gray-400" : "text-[#64748B]"
           }`}
-          style={{ fontSize: "0.9rem" }}
         >
           by {book.author || "Unknown Author"}
         </p>
 
         {/* Rating */}
         {book.rating > 0 && (
-          <div className="flex items-center mb-3">
+          <div className="flex items-center mb-2 sm:mb-3">
             <div className="flex">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-4 h-4 ${
+                  className={`w-3 h-3 sm:w-4 sm:h-4 ${
                     i < Math.floor(book.rating) 
                       ? "text-[#FBBF24] fill-current" 
                       : "text-[#E2E8F0] fill-current"
@@ -276,7 +276,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
               ))}
             </div>
             <span
-              className={`ml-2 text-sm ${
+              className={`ml-1.5 sm:ml-2 text-xs sm:text-sm ${
                 theme === "dark" ? "text-gray-400" : "text-[#64748B]"
               }`}
             >
@@ -286,22 +286,21 @@ export default function BookCard({ book, onFavoriteToggle }) {
         )}
 
         {/* Price */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <div className="flex items-center gap-2">
             {book.originalPrice && book.originalPrice > book.price && (
               <span 
-                className="text-sm line-through"
+                className="text-xs sm:text-sm line-through"
                 style={{ color: "#94A3B8" }}
               >
                 ₹{book.originalPrice}
               </span>
             )}
             <span 
-              className="font-bold"
+              className="text-lg sm:text-xl font-bold"
               style={{ 
                 color: "#E91E8C",
-                fontWeight: "700",
-                fontSize: "1.25rem"
+                fontWeight: "700"
               }}
             >
               ₹{book.price}
@@ -314,7 +313,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
           <button
             onClick={handleAddToCart}
             disabled={isAddingToCart}
-            className="w-full text-white py-2 rounded-lg font-semibold transition-all disabled:opacity-50"
+            className="w-full text-white py-2 sm:py-2.5 text-sm sm:text-base rounded-lg font-semibold transition-all disabled:opacity-50"
             style={{
               background: "linear-gradient(135deg, #14B8A6, #0D9488)",
               fontWeight: "600",
@@ -335,10 +334,10 @@ export default function BookCard({ book, onFavoriteToggle }) {
             {isAddingToCart ? "Adding..." : "Add to Cart"}
           </button>
         ) : (
-          <div className="flex items-center justify-center gap-3 w-full">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 w-full">
             <button
               onClick={handleDecreaseQuantity}
-              className="w-10 h-10 rounded-full text-white font-bold transition-all"
+              className="w-8 h-8 sm:w-10 sm:h-10 text-sm sm:text-base rounded-full text-white font-bold transition-all"
               style={{
                 background: "linear-gradient(135deg, #14B8A6, #0D9488)"
               }}
@@ -346,7 +345,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
               -
             </button>
             <span
-              className={`text-xl font-bold ${
+              className={`text-lg sm:text-xl font-bold ${
                 theme === "dark" ? "text-white" : "text-[#0F172A]"
               }`}
             >
@@ -354,7 +353,7 @@ export default function BookCard({ book, onFavoriteToggle }) {
             </span>
             <button
               onClick={handleIncreaseQuantity}
-              className="w-10 h-10 rounded-full text-white font-bold transition-all"
+              className="w-8 h-8 sm:w-10 sm:h-10 text-sm sm:text-base rounded-full text-white font-bold transition-all"
               style={{
                 background: "linear-gradient(135deg, #14B8A6, #0D9488)"
               }}

@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import CartItemSkeleton from "../components/skeletons/CartItemSkeleton";
 import { useTheme } from "../contexts/ThemeContext";
 import { useCart } from "../contexts/CartContext";
 import { useConfirmation } from "../contexts/ConfirmationContext";
@@ -51,7 +52,7 @@ export default function CartPage() {
     try {
       // Cookie sent automatically
       const response = await updateCartItem(bookId, newQuantity);
-      setCart(response.data);
+      setCart(response); // response is already the cart data
       refreshCart(); // Update cart count in navbar
       toast.success("Cart updated");
     } catch (error) {
@@ -64,7 +65,7 @@ export default function CartPage() {
     try {
       // Cookie sent automatically
       const response = await removeFromCart(bookId);
-      setCart(response.data);
+      setCart(response); // response is already the cart data
       refreshCart(); // Update cart count in navbar
       toast.success("Item removed from cart");
     } catch (error) {
@@ -87,7 +88,7 @@ export default function CartPage() {
     try {
       // Cookie sent automatically
       const response = await clearCart();
-      setCart(response.data);
+      setCart(response); // response is already the cart data
       refreshCart(); // Update cart count in navbar
       toast.success("Cart cleared");
     } catch (error) {
@@ -100,8 +101,33 @@ export default function CartPage() {
     return (
       <div className={theme === "dark" ? "bg-slate-950 min-h-screen" : "bg-gray-50 min-h-screen"}>
         <Navbar />
-        <div className="flex justify-center items-center py-40">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-pink-500"></div>
+        <div className="max-w-screen-2xl container mx-auto px-4 md:px-20 py-12 mt-12">
+          <div className={`h-10 w-48 rounded mb-8 ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-4">
+              {[...Array(3)].map((_, index) => (
+                <CartItemSkeleton key={index} />
+              ))}
+            </div>
+            <div className="lg:col-span-1">
+              <div className={`rounded-xl shadow-lg p-6 ${
+                theme === "dark" ? "bg-slate-900" : "bg-white"
+              } animate-pulse`}>
+                <div className={`h-8 rounded mb-6 ${
+                  theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+                } w-40`}></div>
+                <div className="space-y-4">
+                  {[...Array(4)].map((_, index) => (
+                    <div key={index} className={`h-6 rounded ${
+                      theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+                    }`}></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <Footer />
       </div>
@@ -160,16 +186,16 @@ export default function CartPage() {
             </p>
             <Link
               to="/books"
-              className="inline-block px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all"
+              className="mt-6 px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all"
             >
               Browse Books
             </Link>
           </div>
         ) : (
           /* Cart with Items */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="lg:col-span-2 space-y-3 sm:space-y-4">
               {cart.items.map((item) => (
                 <div
                   key={item._id}
@@ -184,6 +210,7 @@ export default function CartPage() {
                         <img
                           src={item.book.image || "/book1.png"}
                           alt={item.book.name}
+                          loading="lazy"
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -192,13 +219,13 @@ export default function CartPage() {
                     {/* Book Details */}
                     <div className="flex-1">
                       <Link to={`/book/${item.book._id}`}>
-                        <h3 className={`text-xl font-bold mb-2 hover:text-pink-500 transition-colors ${
+                        <h3 className={`text-lg sm:text-xl font-bold mb-2 hover:text-pink-500 transition-colors line-clamp-2 ${
                           theme === "dark" ? "text-white" : "text-gray-900"
                         }`}>
                           {item.book.name || item.book.title}
                         </h3>
                       </Link>
-                      <p className={`mb-2 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                      <p className={`text-base sm:text-lg mt-2 text-center ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
                         by {item.book.author || "Unknown Author"}
                       </p>
                       <p className="text-2xl font-bold text-pink-500 mb-4">
@@ -251,7 +278,7 @@ export default function CartPage() {
               <div className={`rounded-xl shadow-lg p-6 sticky top-24 ${
                 theme === "dark" ? "bg-slate-900" : "bg-white"
               }`}>
-                <h2 className={`text-2xl font-bold mb-6 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+                <h2 className={`text-2xl sm:text-3xl font-bold mt-6 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
                   Order Summary
                 </h2>
 

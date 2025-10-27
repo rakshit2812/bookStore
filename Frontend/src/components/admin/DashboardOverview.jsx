@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { getAnalytics } from "../../services/adminService";
+import DashboardCardSkeleton from "../skeletons/DashboardCardSkeleton";
 
 
 export default function DashboardOverview({ theme }) {
@@ -26,8 +27,52 @@ export default function DashboardOverview({ theme }) {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500"></div>
+      <div className="space-y-8">
+        {/* Header Skeleton */}
+        <div>
+          <div className={`h-10 w-64 rounded mb-2 ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+          <div className={`h-6 w-96 rounded ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+        </div>
+
+        {/* Stats Grid Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[...Array(6)].map((_, index) => (
+            <DashboardCardSkeleton key={index} />
+          ))}
+        </div>
+
+        {/* Summary Insights Skeleton */}
+        <div>
+          <div className={`h-8 w-48 rounded mb-4 ${
+            theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+          } animate-pulse`}></div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className={`rounded-xl shadow-lg p-6 ${
+                theme === "dark" ? "bg-slate-900" : "bg-white"
+              } animate-pulse`}>
+                <div className={`h-6 rounded mb-4 ${
+                  theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+                } w-40`}></div>
+                <div className="space-y-3">
+                  <div className={`h-6 rounded ${
+                    theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+                  } w-full`}></div>
+                  <div className={`h-4 rounded ${
+                    theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+                  } w-3/4`}></div>
+                  <div className={`h-4 rounded ${
+                    theme === "dark" ? "bg-slate-800" : "bg-gray-200"
+                  } w-1/2`}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

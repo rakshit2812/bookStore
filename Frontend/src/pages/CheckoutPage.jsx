@@ -40,13 +40,13 @@ export default function CheckoutPage() {
       // Cookie sent automatically
       const response = await getCart();
       
-      if (!response.data || response.data.items.length === 0) {
+      if (!response || !response.items || response.items.length === 0) {
         toast.error("Your cart is empty!");
         navigate("/cart");
         return;
       }
       
-      setCart(response.data);
+      setCart(response); // response is already the cart data
     } catch (error) {
       console.error("Error fetching cart:", error);
       toast.error("Failed to load cart");
