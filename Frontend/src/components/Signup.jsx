@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -8,11 +8,41 @@ import { handleSignup } from "../services/userService";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState({ score: 0, text: "", color: "" });
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  // Password strength calculator based on industry standards
+  const calculatePasswordStrength = (pass) => {
+    let score = 0;
+    if (!pass) return { score: 0, text: "", color: "" };
+
+    // Length check
+    if (pass.length >= 8) score++;
+    if (pass.length >= 12) score++;
+    
+    // Character variety checks
+    if (/[a-z]/.test(pass)) score++; // lowercase
+    if (/[A-Z]/.test(pass)) score++; // uppercase
+    if (/[0-9]/.test(pass)) score++; // numbers
+    if (/[^A-Za-z0-9]/.test(pass)) score++; // special chars
+
+    // Determine strength
+    if (score <= 2) return { score, text: "Weak", color: "text-red-500", bg: "bg-red-500" };
+    if (score <= 4) return { score, text: "Medium", color: "text-yellow-500", bg: "bg-yellow-500" };
+    return { score, text: "Strong", color: "text-green-500", bg: "bg-green-500" };
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordStrength(calculatePasswordStrength(newPassword));
+  };
 
   const onSubmit = async (data) => {
     const userInfo = {
@@ -54,78 +84,15 @@ export default function Signup() {
   const theme = localStorage.getItem("theme");
 
   return (
-    <div
-      className={`min-h-screen flex items-center justify-center p-4 ${
-        theme === "dark" ? "bg-slate-950" : "bg-gradient-to-br from-purple-50 to-pink-50"
-      }`}
-    >
-      <div
-        className={`flex flex-col lg:flex-row-reverse w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden ${
-          theme === "dark" ? "bg-slate-900" : "bg-white"
-        }`}
-      >
-        {/* Right Side - Image Section */}
-        <div className="lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-purple-600 to-pink-500 p-12 flex flex-col justify-center items-center">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[url('/bannerfinal.png')] bg-cover bg-center"></div>
-          </div>
-          <div className="relative z-10 text-center">
-            <div className="mb-6">
-              <svg
-                className="w-24 h-24 mx-auto text-white"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-              </svg>
-            </div>
-            <h1 className="text-4xl font-bold text-white mb-4">
-              Join Our Community
-            </h1>
-            <p className="text-purple-100 text-lg mb-8">
-              Start your reading journey with thousands of book lovers
-            </p>
-            <div className="flex flex-col space-y-4 text-white">
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Access to premium book collection</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Create your personal library</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Connect with fellow readers</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Left Side - Form Section */}
-        <div className="lg:w-1/2 p-12 flex flex-col justify-center">
-          <div className="w-full max-w-md mx-auto">
+    <div className="flex min-h-screen">
+      {/* Left Side - Form Section (Full Height) */}
+      <div className={`w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-24 ${
+        theme === "dark" ? "bg-slate-950" : "bg-white"
+      }`}>
+          <div className="w-full max-w-md">
             <Link
               to="/"
-              className={`inline-flex items-center space-x-2 mb-8 text-sm font-medium transition-colors ${
+              className={`inline-flex items-center space-x-2 mb-8 mt-8 text-sm font-medium transition-colors ${
                 theme === "dark"
                   ? "text-gray-400 hover:text-white"
                   : "text-gray-600 hover:text-gray-900"
@@ -227,11 +194,67 @@ export default function Signup() {
                       ? "bg-slate-800 border-slate-700 text-white placeholder-gray-500"
                       : "bg-white border-gray-300 text-gray-900 placeholder-gray-400"
                   } ${errors.password ? "border-red-500" : ""}`}
-                  {...register("password", { required: true })}
+                  {...register("password", { 
+                    required: "Password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters"
+                    },
+                    onChange: handlePasswordChange
+                  })}
                 />
+                
+                {/* Password Strength Indicator - Smooth transition without layout shift */}
+                <div 
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    password ? 'max-h-[180px] opacity-100 mt-3' : 'max-h-0 opacity-0 mt-0'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className={`text-sm font-medium ${passwordStrength.color}`}>
+                      {passwordStrength.text}
+                    </span>
+                    <span className={`text-xs ${
+                      theme === "dark" ? "text-gray-400" : "text-gray-500"
+                    }`}>
+                      {passwordStrength.score}/6
+                    </span>
+                  </div>
+                  <div className={`w-full h-2 rounded-full ${
+                    theme === "dark" ? "bg-slate-700" : "bg-gray-200"
+                  }`}>
+                    <div
+                      className={`h-full rounded-full transition-all duration-300 ${passwordStrength.bg}`}
+                      style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
+                    ></div>
+                  </div>
+                  <div className={`mt-2 text-xs ${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}>
+                    <p className="font-medium mb-1">Password should contain:</p>
+                    <ul className="space-y-0.5 ml-1">
+                      <li className={password.length >= 8 ? "text-green-500" : ""}>
+                        ✓ At least 8 characters
+                      </li>
+                      <li className={/[A-Z]/.test(password) ? "text-green-500" : ""}>
+                        ✓ Uppercase letter
+                      </li>
+                      <li className={/[a-z]/.test(password) ? "text-green-500" : ""}>
+                        ✓ Lowercase letter
+                      </li>
+                      <li className={/[0-9]/.test(password) ? "text-green-500" : ""}>
+                        ✓ Number
+                      </li>
+                      <li className={/[^A-Za-z0-9]/.test(password) ? "text-green-500" : ""}>
+                        ✓ Special character (!@#$%^&*)
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
                 {errors.password && (
                   <p className="mt-1 text-sm text-red-500">
-                    Password is required
+                    {errors.password.message}
                   </p>
                 )}
               </div>
@@ -291,7 +314,7 @@ export default function Signup() {
               <span>Sign up with Google</span>
             </button>
 
-            <div className="mt-8 text-center">
+            <div className="mt-8 text-center mb-8">
               <p
                 className={`text-sm ${
                   theme === "dark" ? "text-gray-400" : "text-gray-600"
@@ -305,6 +328,53 @@ export default function Signup() {
                   Login here
                 </Link>
               </p>
+            </div>
+          </div>
+      </div>
+
+      {/* Right Side - Full Image Section */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <img
+          src="/register.jpg"
+          alt="Register"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/50"></div>
+        {/* <div className="absolute inset-0 bg-gradient-to-br from-pink-900/40 to-purple-900/40"></div> */}
+        <div className="relative z-10 flex flex-col justify-center items-center text-center px-12 text-white w-full">
+          <div className="mb-8">
+            <svg
+              className="w-20 h-20 mx-auto text-white drop-shadow-lg cover"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+          </div>
+          <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">
+            Join Our Community
+          </h1>
+          <p className="text-xl mb-8 max-w-md drop-shadow">
+            Start your reading journey with thousands of book lovers worldwide
+          </p>
+          <div className="space-y-4 text-center max-w-md mx-auto">
+            <div className="flex items-center space-x-3 backdrop-blur-[2px] bg-white/10 p-3 rounded-lg">
+              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-lg">Unlimited access to books</span>
+            </div>
+            <div className="flex items-center space-x-3 backdrop-blur-[2px] bg-white/10 p-3 rounded-lg">
+              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-lg">Build your personal library</span>
+            </div>
+            <div className="flex items-center space-x-3 backdrop-blur-[2px] bg-white/10 p-3 rounded-lg">
+              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-lg">Connect with readers worldwide</span>
             </div>
           </div>
         </div>

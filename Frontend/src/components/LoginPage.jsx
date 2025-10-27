@@ -72,75 +72,59 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      className={`min-h-screen flex items-center justify-center p-4 ${
-        theme === "dark" ? "bg-slate-950" : "bg-gradient-to-br from-pink-50 to-purple-50"
-      }`}
-    >
-      <div
-        className={`flex flex-col lg:flex-row w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden ${
-          theme === "dark" ? "bg-slate-900" : "bg-white"
-        }`}
-      >
-        {/* Left Side - Image Section */}
-        <div className="lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600 p-12 flex flex-col justify-center items-center">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[url('/book1.png')] bg-cover bg-center"></div>
+    <div className="flex min-h-screen">
+      {/* Left Side - Full Image Section */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <img
+          src="/login.jpg"
+          alt="Login"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-black/50"></div>
+        <div className="relative z-10 flex flex-col justify-center items-center text-center px-12 text-white w-full">
+          <div className="mb-8">
+            <svg
+              className="w-20 h-20 mx-auto text-white drop-shadow-lg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+            </svg>
           </div>
-          <div className="relative z-10 text-center">
-            <div className="mb-6">
-              <svg
-                className="w-24 h-24 mx-auto text-white"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+          <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">
+            Welcome Back!
+          </h1>
+          <p className="text-xl mb-8 max-w-md drop-shadow">
+            Continue your reading journey with thousands of amazing books
+          </p>
+          <div className="space-y-4 text-center max-w-md mx-auto">
+            <div className="flex items-center space-x-3 backdrop-blur-[2px] bg-white/10 p-3 rounded-lg">
+              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
+              <span className="text-lg">Access your personal library</span>
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">
-              Welcome Back
-            </h1>
-            <p className="text-pink-100 text-lg mb-8">
-              Discover your next great read in our curated collection
-            </p>
-            <div className="flex flex-col space-y-4 text-white">
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Thousands of books at your fingertips</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Personalized recommendations</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Exclusive member benefits</span>
-              </div>
+            <div className="flex items-center space-x-3 backdrop-blur-[2px] bg-white/10 p-3 rounded-lg">
+              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-lg">Track your reading progress</span>
+            </div>
+            <div className="flex items-center space-x-3 backdrop-blur-[2px] bg-white/10 p-3 rounded-lg">
+              <svg className="w-6 h-6 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-lg">Get personalized recommendations</span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Right Side - Form Section */}
-        <div className="lg:w-1/2 p-12 flex flex-col justify-center">
-          <div className="w-full max-w-md mx-auto">
+      {/* Right Side - Form Section (Full Height) */}
+      <div className={`w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-12 lg:px-16 xl:px-24 ${
+        theme === "dark" ? "bg-slate-950" : "bg-white"
+      }`}>
+          <div className="w-full max-w-md">
             <Link
               to="/"
               className={`inline-flex items-center space-x-2 mb-8 text-sm font-medium transition-colors ${
@@ -300,7 +284,6 @@ export default function LoginPage() {
               </p>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );
