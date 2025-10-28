@@ -6,6 +6,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
 
 dotenv.config();
+const isProd = process.env.NODE_ENV === 'production';
 
 // Configure Passport Google Strategy
 passport.use(
@@ -146,12 +147,12 @@ export const handleLogin = async(req,res) => {
             const token = setUser(user);
             
             // Set token in HttpOnly cookie for security (7 days expiry)
-            const isProd = process.env.NODE_ENV === 'production';
+            
             res.cookie("authToken" , token, {
                 httpOnly: true,
                 secure: isProd,
                 sameSite: isProd ? 'None' : 'Lax',
-                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+                maxAge: process.env.COOKIE_EXPIRY,
                 path : "/",
             });
             
@@ -177,7 +178,7 @@ export const handleLogout = async(req, res) => {
         res.clearCookie("authToken", {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: isProd ? 'None' : 'Lax',
             path: "/"
         });
         
@@ -203,12 +204,11 @@ export const handleGoogleCallback = async(req, res) => {
         const token = setUser(user);
         
         // Set token in HttpOnly cookie
-        const isProd = process.env.NODE_ENV === 'production';
         res.cookie("authToken", token, {
             httpOnly: true,
             secure: isProd,
             sameSite: isProd ? 'None' : 'Lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            maxAge: process.env.COOKIE_EXPIRY,
             path: "/",
         });
 
